@@ -1,0 +1,44 @@
+{
+  "name": "catalogo-bcm",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "packages/shared"
+  ],
+  "engines": {
+    "node": ">=24.0.0 <25",
+    "npm": ">=11 <12"
+  },
+  "scripts": {
+    "dev:frontend": "npm run dev --workspace @bcm/frontend",
+    "dev:backend": "npm run dev --workspace @bcm/backend",
+    "build:shared": "npm run build --workspace @bcm/shared",
+    "build:frontend": "npm run build:shared && npm run build --workspace @bcm/frontend",
+    "build:backend": "npm run build:shared && npm run build --workspace @bcm/backend",
+    "build": "npm run build:shared && npm run build --workspace @bcm/backend && npm run build --workspace @bcm/frontend",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "npm run build:shared && npm run typecheck --workspaces",
+    "test": "npm run build:shared && npm run test --workspace @bcm/backend",
+    "prisma:validate": "npm run prisma:validate --workspace @bcm/backend",
+    "prisma:generate": "npm run prisma:generate --workspace @bcm/backend",
+    "prisma:migrate": "npm run prisma:migrate --workspace @bcm/backend --",
+    "prisma:studio": "npm run prisma:studio --workspace @bcm/backend",
+    "prisma:deploy": "npm run prisma:deploy --workspace @bcm/backend",
+    "prisma:status": "npm run prisma:status --workspace @bcm/backend",
+    "prisma:seed": "npm run prisma:seed --workspace @bcm/backend",
+    "test:integration": "npm run test:integration --workspace @bcm/backend",
+    "prisma:test:migrate": "npm run prisma:test:migrate --workspace @bcm/backend",
+    "test:frontend": "npm run test --workspace @bcm/frontend",
+    "test:e2e": "npm run test:e2e --workspace @bcm/frontend"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@types/node": "^24.0.0",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "^16.0.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.0.0"
+  }
+}

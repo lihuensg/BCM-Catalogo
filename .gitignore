@@ -1,0 +1,14 @@
+node_modules/
+.next/
+dist/
+coverage/
+*.tsbuildinfo
+*.log
+.env
+.env.*
+!.env.example
+backend/src/generated/
+artifacts/
+
+.npm-cache/
+!.env.test.example
