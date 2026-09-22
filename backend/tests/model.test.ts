@@ -12,6 +12,9 @@ import { bannerSchema } from '../src/modules/banners/schema.js';
 import { siteSettingsSchema, whatsappTemplateSchema } from '../src/modules/settings/schema.js';
 import { adminUserSchema } from '../src/modules/auth/schema.js';
 import { structuralSeedSchema } from '../src/infrastructure/prisma/seed-schema.js';
+import { publicProductsQuery } from '../src/modules/catalog/schema.js';
+import { publicProductDto } from '../src/modules/catalog/mapper.js';
+import type { PublicProductRow } from '../src/modules/catalog/repository.js';
 
 const categoryId = randomUUID();
 const attributeId = randomUUID();
@@ -144,4 +147,41 @@ test('seed is structural only and rejects duplicate slugs', () => {
 test('database URL errors never contain credentials', () => {
   assert.throws(() => requireDatabaseUrl(undefined), /DATABASE_URL/);
   assert.throws(() => requireDatabaseUrl('https://user:secret@example.test/db'), (error: unknown) => error instanceof Error && !error.message.includes('secret'));
+});
+
+
+test('public catalog query validates filters, price range and maximum page size', () => {
+  const parsed = publicProductsQuery.parse({ page: '2', pageSize: '60', onSale: 'true', minPrice: '10.00', maxPrice: '20.00' });
+  assert.equal(parsed.page, 2);
+  assert.equal(parsed.pageSize, 60);
+  assert.equal(parsed.onSale, true);
+  assert.equal(parsed.minPrice?.toFixed(2), '10.00');
+  assert.equal(publicProductsQuery.safeParse({ pageSize: '61' }).success, false);
+  assert.equal(publicProductsQuery.safeParse({ minPrice: '20', maxPrice: '10' }).success, false);
+  assert.equal(publicProductsQuery.safeParse({ sort: 'passwordHash' }).success, false);
+});
+
+test('public product mapper never exposes hidden price values', () => {
+  const row = {
+    id: randomUUID(),
+    name: 'Producto privado',
+    slug: 'producto-privado',
+    shortDescription: 'Descripción',
+    price: new Prisma.Decimal('999999.99'),
+    compareAtPrice: new Prisma.Decimal('1200000.00'),
+    showPrice: false,
+    saleMode: 'IN_STOCK',
+    availability: 'AVAILABLE',
+    featured: false,
+    onSale: true,
+    newArrival: false,
+    publishedAt: new Date('2026-09-20T12:00:00Z'),
+    category: { id: randomUUID(), name: 'Categoría', slug: 'categoria' },
+    brand: null,
+    images: []
+  } as PublicProductRow;
+  const dto = publicProductDto(row);
+  assert.equal(dto.price, null);
+  assert.equal(dto.compareAtPrice, null);
+  assert.equal(dto.showPrice, false);
 });

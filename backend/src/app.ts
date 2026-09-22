@@ -35,7 +35,17 @@ export function createApp(options: {
         methods: ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'], allowedHeaders: ['Content-Type', 'X-BCM-Admin'] }));
     app.use(express.json({ limit: '100kb' }));
     app.use('/api/v1/health', healthRouter);
-    app.use('/api/v1/public', (_req, res, next) => { res.set('Cache-Control', 'public, max-age=0, s-maxage=300, stale-while-revalidate=86400'); next(); }, (req, res, next) => catalogRouter(database())(req, res, next));
+    let publicCatalog: ReturnType<typeof catalogRouter> | undefined;
+    app.use('/api/v1/public',
+        (_req, res, next) => {
+            res.set('Cache-Control', 'public, max-age=0, s-maxage=300, stale-while-revalidate=86400');
+            next();
+        },
+        (req, res, next) => {
+            publicCatalog ??= catalogRouter(database());
+            publicCatalog(req, res, next);
+        }
+    );
     app.use(['/api/v1/auth', '/api/v1/admin'], (_req, res, next) => { res.set('Cache-Control', 'no-store'); next(); }, protectMutations(options.corsOrigins));
     app.use('/api/v1/auth', authRouter(auth, cookie));
     let admin: ReturnType<typeof adminRouter> | undefined;
