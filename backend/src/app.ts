@@ -16,12 +16,14 @@ import type { PrismaClient } from './generated/prisma/client.js';
 import { adminRouter } from './admin-router.js';
 import { catalogRouter } from './modules/catalog/routes.js';
 import { logEvent } from './shared/logger.js';
+import type { PublicInvalidationHook } from './shared/public-cache.js';
 export function createApp(options: {
     corsOrigins: readonly string[];
     production?: boolean;
     sessionTtlSeconds?: number;
     database?: PrismaClient;
-    productMutationHook?:ProductMutationHook;
+    productMutationHook?: ProductMutationHook;
+    publicInvalidationHook?: PublicInvalidationHook;
 }) {
     const app = express();
     const production = options.production ?? false, ttl = options.sessionTtlSeconds ?? 28800;
@@ -50,6 +52,7 @@ export function createApp(options: {
     app.use('/api/v1/auth', authRouter(auth, cookie));
     let admin: ReturnType<typeof adminRouter> | undefined;
     const mutationLimit = requestLimit(120, 60000);
+    const publicInvalidation = options.publicInvalidationHook ?? (() => undefined);
     app.use('/api/v1/admin', requireAdmin(auth, cookie.name), (req, res, next) => {
         if (['GET', 'HEAD', 'OPTIONS'].includes(req.method))
             return next();
@@ -57,8 +60,17 @@ export function createApp(options: {
     }, (req, res, next) => {
         if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method))
             res.on('finish', () => {
-                if (res.statusCode < 400 && req.admin)
+                if (res.statusCode < 400 && req.admin) {
                     logEvent('admin.mutation', { adminId: req.admin.id, status: res.statusCode });
+                    const prefix = req.path.split('/').filter(Boolean)[0];
+                    const tags = prefix === 'categories' ? ['public-categories', 'public-products', 'public-home']
+                        : prefix === 'brands' ? ['public-brands', 'public-products', 'public-home']
+                        : prefix === 'attributes' ? ['public-products']
+                        : prefix === 'banners' ? ['public-home']
+                        : prefix === 'settings' ? ['public-settings', 'public-home']
+                        : [];
+                    if (tags.length) void Promise.resolve(publicInvalidation(tags)).catch(() => logEvent('public.revalidation.failed', { resource: prefix }));
+                }
             });
         next();
     }, (req, res, next) => { admin ??= adminRouter(database(),options.productMutationHook); admin(req, res, next); });

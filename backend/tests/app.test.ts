@@ -42,4 +42,8 @@ test('environment rejects invalid ports and CORS origins without exposing values
   assert.throws(() => parseEnvironment({ CORS_ORIGINS: '*' }), /CORS_ORIGINS/);
   assert.throws(() => parseEnvironment({ CORS_ORIGINS: `${origin}/path` }), /CORS_ORIGINS/);
   assert.deepEqual(parseEnvironment({}).CORS_ORIGINS, []);
+  assert.throws(() => parseEnvironment({ FRONTEND_REVALIDATE_URL: 'https://frontend.example/api/revalidate' }), /REVALIDATION_SECRET/);
+  assert.throws(() => parseEnvironment({ REVALIDATION_SECRET: 'x'.repeat(32) }), /REVALIDATION_SECRET/);
+  const revalidation = parseEnvironment({ FRONTEND_REVALIDATE_URL: 'https://frontend.example/api/revalidate', REVALIDATION_SECRET: 'x'.repeat(32) });
+  assert.equal(revalidation.FRONTEND_REVALIDATE_URL, 'https://frontend.example/api/revalidate');
 });
