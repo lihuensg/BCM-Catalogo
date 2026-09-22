@@ -36,9 +36,26 @@ export async function seedCatalog(client: PrismaClient, input: unknown) {
             const brandId = seed.brandSlug ? brandIds.get(seed.brandSlug)! : null;
             const existing = await tx.product.findUnique({ where: { slug: seed.slug }, select: { id: true } });
             if (existing) continue;
-            const { categorySlug: _categorySlug, brandSlug: _brandSlug, ...product } = seed;
             await tx.product.create({
-                data: { ...product, categoryId, brandId, active: true, publishedAt: new Date() }
+                data: {
+                    name: seed.name,
+                    slug: seed.slug,
+                    sku: seed.sku,
+                    shortDescription: seed.shortDescription,
+                    categoryId,
+                    brandId,
+                    price: seed.price,
+                    compareAtPrice: seed.compareAtPrice,
+                    showPrice: seed.showPrice,
+                    saleMode: seed.saleMode,
+                    availability: seed.availability,
+                    featured: seed.featured,
+                    onSale: seed.onSale,
+                    newArrival: seed.newArrival,
+                    sortOrder: seed.sortOrder,
+                    active: true,
+                    publishedAt: new Date()
+                }
             });
             created++;
         }
