@@ -1,0 +1,1 @@
+import{CatalogListing}from'@/components/catalog/catalog-listing';export default async function Page({searchParams}:{searchParams:Promise<Record<string,string|string[]|undefined>>}){return <CatalogListing pathname="/destacados" params={await searchParams} forced={{featured:true}} title="Destacados" description="La selección destacada de nuestro catálogo."/>}

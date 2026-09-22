@@ -1,6 +1,2 @@
-import Link from 'next/link';
-import { BrandLogo } from '@/components/shared/brand-logo';
-
-export default function PublicLayout({ children }: { children: React.ReactNode }) {
-  return <div className="public-shell"><header className="public-header container"><Link href="/" aria-label="BCM, inicio"><BrandLogo /></Link><span className="badge">Catálogo</span></header><main id="contenido" className="public-main container">{children}</main><footer className="public-footer container"><span>BCM Products</span><span>Catálogo online</span></footer></div>;
-}
+import Link from'next/link';import{BrandLogo}from'@/components/shared/brand-logo';import{PublicHeader}from'@/components/catalog/public-header';import{getSettings}from'@/services/public/client';
+export default async function PublicLayout({children}:{children:React.ReactNode}){const settings=await getSettings();return <div className="public-shell"><PublicHeader settings={settings}/><main id="contenido" className="public-main">{children}</main><div className="public-footer-wrap"><footer className="public-footer container"><div><BrandLogo/><p>{settings?.defaultSeoDescription??'Productos seleccionados para descubrir y consultar.'}</p></div><div><h3>Explorar</h3><nav><Link href="/catalogo">Catálogo</Link><Link href="/ofertas">Ofertas</Link><Link href="/nuevos">Nuevos ingresos</Link></nav></div><div><h3>Contacto</h3><nav>{settings?.instagramUrl&&<a href={settings.instagramUrl} target="_blank" rel="noreferrer">Instagram</a>}<Link href="/buscar">Buscar productos</Link></nav></div></footer><div className="public-footer-note container">© BCM Products · Catálogo online</div></div></div>}

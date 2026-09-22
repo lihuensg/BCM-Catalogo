@@ -1,8 +1,1 @@
-import type { NextConfig } from 'next';
-
-const config: NextConfig = {
-  poweredByHeader: false,
-  // Repository-wide instructions are maintained in the root AGENTS.md.
-  agentRules: false
-};
-export default config;
+import type{NextConfig}from'next';const config:NextConfig={poweredByHeader:false,agentRules:false,images:{remotePatterns:[{protocol:'https',hostname:'**'},{protocol:'http',hostname:'localhost'},{protocol:'http',hostname:'127.0.0.1'}]}};export default config;

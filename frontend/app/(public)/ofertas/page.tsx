@@ -1,0 +1,1 @@
+import{CatalogListing}from'@/components/catalog/catalog-listing';export default async function Page({searchParams}:{searchParams:Promise<Record<string,string|string[]|undefined>>}){return <CatalogListing pathname="/ofertas" params={await searchParams} forced={{onSale:true}} title="Ofertas" description="Productos publicados actualmente como oferta por BCM."/>}

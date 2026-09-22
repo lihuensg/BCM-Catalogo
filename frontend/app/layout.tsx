@@ -4,7 +4,7 @@ import '@/styles/globals.css';
 export const metadata: Metadata = {
   title: { default: 'BCM', template: '%s | BCM' },
   description: 'Catálogo BCM',
-  robots: { index: false, follow: false }
+  robots: { index: true, follow: true }
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

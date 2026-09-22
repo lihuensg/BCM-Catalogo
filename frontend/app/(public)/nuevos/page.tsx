@@ -1,0 +1,1 @@
+import{CatalogListing}from'@/components/catalog/catalog-listing';export default async function Page({searchParams}:{searchParams:Promise<Record<string,string|string[]|undefined>>}){return <CatalogListing pathname="/nuevos" params={await searchParams} forced={{newArrival:true}} title="Nuevos ingresos" description="Lo más nuevo que se incorporó al catálogo BCM."/>}
