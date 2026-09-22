@@ -1,0 +1,427 @@
+{
+  "site": {
+    "siteName": "BCM Products",
+    "defaultSeoTitle": "BCM Products | Catálogo",
+    "defaultSeoDescription": "Catálogo BCM de tecnología, accesorios, perfumes, audio, smartwatches y gadgets."
+  },
+  "categories": [
+    {
+      "name": "Celulares",
+      "slug": "celulares",
+      "sortOrder": 10
+    },
+    {
+      "name": "Accesorios",
+      "slug": "accesorios",
+      "sortOrder": 20
+    },
+    {
+      "name": "Perfumes",
+      "slug": "perfumes",
+      "sortOrder": 30
+    },
+    {
+      "name": "Audio",
+      "slug": "audio",
+      "sortOrder": 40
+    },
+    {
+      "name": "Smartwatches",
+      "slug": "smartwatches",
+      "sortOrder": 50
+    },
+    {
+      "name": "Gadgets",
+      "slug": "gadgets",
+      "sortOrder": 60
+    }
+  ],
+  "brands": [
+    {
+      "name": "Apple",
+      "slug": "apple"
+    },
+    {
+      "name": "Samsung",
+      "slug": "samsung"
+    },
+    {
+      "name": "Motorola",
+      "slug": "motorola"
+    },
+    {
+      "name": "Xiaomi",
+      "slug": "xiaomi"
+    },
+    {
+      "name": "Anker",
+      "slug": "anker"
+    },
+    {
+      "name": "Logitech",
+      "slug": "logitech"
+    },
+    {
+      "name": "Dior",
+      "slug": "dior"
+    },
+    {
+      "name": "Carolina Herrera",
+      "slug": "carolina-herrera"
+    },
+    {
+      "name": "Rabanne",
+      "slug": "rabanne"
+    },
+    {
+      "name": "JBL",
+      "slug": "jbl"
+    },
+    {
+      "name": "Amazon",
+      "slug": "amazon"
+    }
+  ],
+  "products": [
+    {
+      "name": "Apple iPhone 16 Pro",
+      "slug": "apple-iphone-16-pro",
+      "sku": null,
+      "shortDescription": "Celular premium de Apple para quienes buscan rendimiento y una experiencia integrada.",
+      "categorySlug": "celulares",
+      "brandSlug": "apple",
+      "price": "1899999.00",
+      "compareAtPrice": "2199999.00",
+      "showPrice": true,
+      "onSale": true,
+      "featured": true,
+      "newArrival": false,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 10
+    },
+    {
+      "name": "Samsung Galaxy S25 Ultra",
+      "slug": "samsung-galaxy-s25-ultra",
+      "sku": null,
+      "shortDescription": "Smartphone de gama alta Samsung pensado para productividad, fotografía y entretenimiento.",
+      "categorySlug": "celulares",
+      "brandSlug": "samsung",
+      "price": "1699999.00",
+      "compareAtPrice": null,
+      "showPrice": true,
+      "onSale": false,
+      "featured": true,
+      "newArrival": false,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 20
+    },
+    {
+      "name": "Motorola Edge 60 Pro",
+      "slug": "motorola-edge-60-pro",
+      "sku": null,
+      "shortDescription": "Equipo Motorola de gama alta con diseño moderno para uso diario exigente.",
+      "categorySlug": "celulares",
+      "brandSlug": "motorola",
+      "price": "899999.00",
+      "compareAtPrice": null,
+      "showPrice": true,
+      "onSale": false,
+      "featured": false,
+      "newArrival": true,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 30
+    },
+    {
+      "name": "Xiaomi Redmi Note 14 Pro 5G",
+      "slug": "xiaomi-redmi-note-14-pro-5g",
+      "sku": null,
+      "shortDescription": "Smartphone Xiaomi equilibrado para conectividad, contenido y uso cotidiano.",
+      "categorySlug": "celulares",
+      "brandSlug": "xiaomi",
+      "price": "649999.00",
+      "compareAtPrice": null,
+      "showPrice": true,
+      "onSale": false,
+      "featured": false,
+      "newArrival": true,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 40
+    },
+    {
+      "name": "Samsung Galaxy A56 5G",
+      "slug": "samsung-galaxy-a56-5g",
+      "sku": null,
+      "shortDescription": "Smartphone Samsung de línea Galaxy A con conectividad 5G.",
+      "categorySlug": "celulares",
+      "brandSlug": "samsung",
+      "price": "729999.00",
+      "compareAtPrice": null,
+      "showPrice": true,
+      "onSale": false,
+      "featured": false,
+      "newArrival": false,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 50
+    },
+    {
+      "name": "Motorola Razr 60 Ultra",
+      "slug": "motorola-razr-60-ultra",
+      "sku": null,
+      "shortDescription": "Smartphone plegable Motorola para quienes buscan un formato diferencial.",
+      "categorySlug": "celulares",
+      "brandSlug": "motorola",
+      "price": null,
+      "compareAtPrice": null,
+      "showPrice": false,
+      "onSale": false,
+      "featured": true,
+      "newArrival": true,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 60
+    },
+    {
+      "name": "Apple MagSafe Charger",
+      "slug": "apple-magsafe-charger",
+      "sku": null,
+      "shortDescription": "Cargador magnético Apple para dispositivos compatibles.",
+      "categorySlug": "accesorios",
+      "brandSlug": "apple",
+      "price": "129999.00",
+      "compareAtPrice": null,
+      "showPrice": true,
+      "onSale": false,
+      "featured": false,
+      "newArrival": false,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 70
+    },
+    {
+      "name": "Samsung 45W Power Adapter",
+      "slug": "samsung-45w-power-adapter",
+      "sku": null,
+      "shortDescription": "Adaptador de corriente Samsung para carga compatible de alta potencia.",
+      "categorySlug": "accesorios",
+      "brandSlug": "samsung",
+      "price": "89999.00",
+      "compareAtPrice": null,
+      "showPrice": true,
+      "onSale": false,
+      "featured": false,
+      "newArrival": false,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 80
+    },
+    {
+      "name": "Anker Nano Power Bank 10K",
+      "slug": "anker-nano-power-bank-10k",
+      "sku": null,
+      "shortDescription": "Batería portátil Anker compacta para acompañarte fuera de casa.",
+      "categorySlug": "accesorios",
+      "brandSlug": "anker",
+      "price": "119999.00",
+      "compareAtPrice": null,
+      "showPrice": true,
+      "onSale": false,
+      "featured": true,
+      "newArrival": true,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 90
+    },
+    {
+      "name": "Logitech Pebble Mouse 2 M350s",
+      "slug": "logitech-pebble-mouse-2-m350s",
+      "sku": null,
+      "shortDescription": "Mouse inalámbrico Logitech compacto para escritorio, notebook y movilidad.",
+      "categorySlug": "accesorios",
+      "brandSlug": "logitech",
+      "price": "69999.00",
+      "compareAtPrice": null,
+      "showPrice": true,
+      "onSale": false,
+      "featured": false,
+      "newArrival": false,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 100
+    },
+    {
+      "name": "Apple AirTag",
+      "slug": "apple-airtag",
+      "sku": null,
+      "shortDescription": "Localizador compacto Apple para objetos personales compatibles con la red Buscar.",
+      "categorySlug": "accesorios",
+      "brandSlug": "apple",
+      "price": "79999.00",
+      "compareAtPrice": null,
+      "showPrice": true,
+      "onSale": false,
+      "featured": false,
+      "newArrival": false,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 110
+    },
+    {
+      "name": "Dior Sauvage Eau de Parfum",
+      "slug": "dior-sauvage-eau-de-parfum",
+      "sku": null,
+      "shortDescription": "Fragancia masculina Dior de la línea Sauvage en concentración Eau de Parfum.",
+      "categorySlug": "perfumes",
+      "brandSlug": "dior",
+      "price": null,
+      "compareAtPrice": null,
+      "showPrice": false,
+      "onSale": false,
+      "featured": true,
+      "newArrival": false,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 120
+    },
+    {
+      "name": "Carolina Herrera 212 VIP Rosé Eau de Parfum",
+      "slug": "carolina-herrera-212-vip-rose-eau-de-parfum",
+      "sku": null,
+      "shortDescription": "Fragancia Carolina Herrera de la línea 212 VIP Rosé.",
+      "categorySlug": "perfumes",
+      "brandSlug": "carolina-herrera",
+      "price": null,
+      "compareAtPrice": null,
+      "showPrice": false,
+      "onSale": false,
+      "featured": false,
+      "newArrival": true,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 130
+    },
+    {
+      "name": "Rabanne 1 Million Eau de Toilette",
+      "slug": "rabanne-1-million-eau-de-toilette",
+      "sku": null,
+      "shortDescription": "Fragancia masculina Rabanne de la línea 1 Million.",
+      "categorySlug": "perfumes",
+      "brandSlug": "rabanne",
+      "price": null,
+      "compareAtPrice": null,
+      "showPrice": false,
+      "onSale": false,
+      "featured": false,
+      "newArrival": false,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 140
+    },
+    {
+      "name": "Apple AirPods Pro 2",
+      "slug": "apple-airpods-pro-2",
+      "sku": null,
+      "shortDescription": "Auriculares inalámbricos Apple de la línea AirPods Pro.",
+      "categorySlug": "audio",
+      "brandSlug": "apple",
+      "price": "449999.00",
+      "compareAtPrice": "499999.00",
+      "showPrice": true,
+      "onSale": true,
+      "featured": true,
+      "newArrival": false,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 150
+    },
+    {
+      "name": "JBL Tune 770NC",
+      "slug": "jbl-tune-770nc",
+      "sku": null,
+      "shortDescription": "Auriculares inalámbricos JBL de formato vincha para música y uso cotidiano.",
+      "categorySlug": "audio",
+      "brandSlug": "jbl",
+      "price": "179999.00",
+      "compareAtPrice": null,
+      "showPrice": true,
+      "onSale": false,
+      "featured": false,
+      "newArrival": false,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 160
+    },
+    {
+      "name": "Apple Watch Series 10",
+      "slug": "apple-watch-series-10",
+      "sku": null,
+      "shortDescription": "Smartwatch Apple para actividad, notificaciones y ecosistema iPhone.",
+      "categorySlug": "smartwatches",
+      "brandSlug": "apple",
+      "price": "699999.00",
+      "compareAtPrice": null,
+      "showPrice": true,
+      "onSale": false,
+      "featured": true,
+      "newArrival": false,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 170
+    },
+    {
+      "name": "Samsung Galaxy Watch7",
+      "slug": "samsung-galaxy-watch7",
+      "sku": null,
+      "shortDescription": "Smartwatch Samsung para actividad, notificaciones y ecosistema Galaxy.",
+      "categorySlug": "smartwatches",
+      "brandSlug": "samsung",
+      "price": "399999.00",
+      "compareAtPrice": null,
+      "showPrice": true,
+      "onSale": false,
+      "featured": false,
+      "newArrival": false,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 180
+    },
+    {
+      "name": "Amazon Echo Dot 5th Gen",
+      "slug": "amazon-echo-dot-5th-gen",
+      "sku": null,
+      "shortDescription": "Parlante inteligente compacto Amazon Echo para el hogar.",
+      "categorySlug": "gadgets",
+      "brandSlug": "amazon",
+      "price": "159999.00",
+      "compareAtPrice": null,
+      "showPrice": true,
+      "onSale": false,
+      "featured": false,
+      "newArrival": false,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 190
+    },
+    {
+      "name": "Xiaomi Smart Band 9",
+      "slug": "xiaomi-smart-band-9",
+      "sku": null,
+      "shortDescription": "Pulsera inteligente Xiaomi compacta para actividad y notificaciones.",
+      "categorySlug": "gadgets",
+      "brandSlug": "xiaomi",
+      "price": "99999.00",
+      "compareAtPrice": null,
+      "showPrice": true,
+      "onSale": false,
+      "featured": false,
+      "newArrival": true,
+      "saleMode": "IN_STOCK",
+      "availability": "AVAILABLE",
+      "sortOrder": 200
+    }
+  ]
+}

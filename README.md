@@ -86,7 +86,7 @@ El schema completo también se valida y genera cliente sin DB. Ver docs/DATABASE
 npm run prisma:seed
 ```
 
-Sin SEED_DATA_FILE ni variables ADMIN_*, informa que no hay datos y no escribe. Para poblar categorías
+Sin SEED_DATA_FILE, SEED_CATALOG_FILE ni variables ADMIN_*, informa que no hay datos y no escribe. Para poblar categorías
 raíz y marcas propias, preparar un JSON con arrays categories y brands (ejemplo
 de forma en backend/prisma/seed.example.json), configurar SEED_DATA_FILE en backend/.env
 con su ruta relativa a backend, aplicar antes la migración y ejecutar el comando.
@@ -199,3 +199,13 @@ E2E usa exclusivamente TEST_DATABASE_URL y levanta frontend/API locales en puert
 No correr en paralelo con integración (ambos prueban settings). Capturas y datos
 temporales se guardan únicamente en artifacts/ ignorado. No hay credenciales de
 acceso operativas predefinidas: usar el seed documentado con una DB de desarrollo.
+
+
+### Catálogo demo persistido
+`backend/prisma/catalog.seed.json` contiene 20 productos de referencia de marcas conocidas, categorías y settings mínimos. Los precios son datos demo para desarrollo/presentación y deben revisarse antes de un uso comercial real.
+
+Para cargarlo en una base de desarrollo:
+```env
+SEED_CATALOG_FILE=prisma/catalog.seed.json
+```
+y ejecutar `npm run prisma:seed`. El seed es idempotente por slug: no duplica ni sobreescribe productos que luego fueron editados desde el panel.
