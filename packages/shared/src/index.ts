@@ -197,3 +197,110 @@ export interface DashboardDto {
  recent:DashboardProduct[];withoutImage:DashboardProduct[];withoutVisiblePrice:DashboardProduct[];inactive:DashboardProduct[];
 }
 export interface ProductAttributeDefinitionDto extends CategoryAttributeDto {definition:AttributeDto}
+
+
+/** Public catalog contracts: never include hidden/internal prices. */
+export interface PublicCategoryDto {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    imageUrl: string | null;
+    parentId: string | null;
+    sortOrder: number;
+    productCount: number;
+}
+export interface PublicBrandDto {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    logoUrl: string | null;
+    productCount: number;
+}
+export interface PublicProductImageDto {
+    url: string;
+    altText: string;
+}
+export interface PublicProductListDto {
+    id: string;
+    name: string;
+    slug: string;
+    shortDescription: string;
+    category: Pick<PublicCategoryDto, 'id' | 'name' | 'slug'>;
+    brand: Pick<PublicBrandDto, 'id' | 'name' | 'slug'> | null;
+    price: string | null;
+    compareAtPrice: string | null;
+    showPrice: boolean;
+    saleMode: SaleMode;
+    availability: Availability;
+    featured: boolean;
+    onSale: boolean;
+    newArrival: boolean;
+    publishedAt: string;
+    thumbnail: PublicProductImageDto | null;
+}
+export interface PublicProductAttributeDto {
+    id: string;
+    name: string;
+    slug: string;
+    dataType: AttributeDataType;
+    unit: string | null;
+    value: string;
+}
+export interface PublicProductDetailDto extends PublicProductListDto {
+    sku: string | null;
+    fullDescription: string | null;
+    seoTitle: string | null;
+    seoDescription: string | null;
+    images: PublicProductImageDto[];
+    attributes: PublicProductAttributeDto[];
+}
+export interface PublicBannerDto {
+    id: string;
+    title: string | null;
+    subtitle: string | null;
+    imageUrl: string;
+    mobileImageUrl: string | null;
+    ctaText: string | null;
+    ctaHref: string | null;
+    placement: BannerPlacement;
+    sortOrder: number;
+}
+export interface PublicSettingsDto {
+    siteName: string;
+    whatsappNumber: string | null;
+    whatsappMessageTemplate: string | null;
+    instagramUrl: string | null;
+    heroTitle: string | null;
+    heroSubtitle: string | null;
+    defaultSeoTitle: string;
+    defaultSeoDescription: string;
+    defaultOgImageUrl: string | null;
+}
+export interface PublicHomeDto {
+    settings: PublicSettingsDto | null;
+    heroBanners: PublicBannerDto[];
+    secondaryBanners: PublicBannerDto[];
+    categories: PublicCategoryDto[];
+    brands: PublicBrandDto[];
+    featured: PublicProductListDto[];
+    offers: PublicProductListDto[];
+    newArrivals: PublicProductListDto[];
+}
+export interface PublicProductListQuery {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    sort?: 'sortOrder' | 'publishedAt' | 'price' | 'name';
+    order?: 'asc' | 'desc';
+    category?: string;
+    brand?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    availability?: Availability;
+    saleMode?: SaleMode;
+    featured?: boolean;
+    onSale?: boolean;
+    newArrival?: boolean;
+}
