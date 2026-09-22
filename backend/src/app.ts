@@ -69,7 +69,7 @@ export function createApp(options: {
                         : prefix === 'banners' ? ['public-home']
                         : prefix === 'settings' ? ['public-settings', 'public-home']
                         : [];
-                    if (tags.length) void Promise.resolve(publicInvalidation(tags)).catch(() => logEvent('public.revalidation.failed', { resource: prefix }));
+                    if (tags.length) void Promise.resolve(publicInvalidation(tags)).catch(() => logEvent('public.revalidation.failed', { resource: prefix ?? 'unknown' }));
                 }
             });
         next();
