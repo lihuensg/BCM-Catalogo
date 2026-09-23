@@ -10,7 +10,16 @@ const environmentSchema = z.object({
     SESSION_TTL_SECONDS: z.coerce.number().int().min(300).max(604800).default(28800),
     HOST: z.string().min(1).default('127.0.0.1'),
     PORT: z.coerce.number().int().min(1).max(65535).default(4100),
-    CORS_ORIGINS: z.string().default('').transform((value) => value.split(',').map((origin) => origin.trim()).filter(Boolean)).pipe(z.array(originSchema))
+    TRUST_PROXY_HOPS: z.coerce.number().int().min(0).max(2).default(0),
+    CORS_ORIGINS: z.string().default('').transform((value) => value.split(',').map((origin) => origin.trim()).filter(Boolean)).pipe(z.array(originSchema)),
+    FRONTEND_REVALIDATE_URL: z.string().url().optional(),
+    REVALIDATION_SECRET: z.string().min(32).optional()
+}).superRefine((value, context) => {
+    const configured = Boolean(value.FRONTEND_REVALIDATE_URL);
+    const secret = Boolean(value.REVALIDATION_SECRET);
+    if (configured !== secret) {
+        context.addIssue({ code: 'custom', path: ['REVALIDATION_SECRET'], message: 'Revalidation URL and secret must be configured together' });
+    }
 });
 export function parseEnvironment(source: NodeJS.ProcessEnv) {
     const result = environmentSchema.safeParse(source);

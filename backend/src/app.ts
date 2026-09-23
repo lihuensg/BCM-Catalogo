@@ -14,13 +14,17 @@ import { sessionCookie } from './modules/auth/cookie.js';
 import { getPrismaClient } from './infrastructure/prisma/client.js';
 import type { PrismaClient } from './generated/prisma/client.js';
 import { adminRouter } from './admin-router.js';
+import { catalogRouter } from './modules/catalog/routes.js';
 import { logEvent } from './shared/logger.js';
+import { adminResourceInvalidationTags, type PublicInvalidationHook } from './shared/public-cache.js';
 export function createApp(options: {
     corsOrigins: readonly string[];
     production?: boolean;
     sessionTtlSeconds?: number;
+    trustProxyHops?: number;
     database?: PrismaClient;
-    productMutationHook?:ProductMutationHook;
+    productMutationHook?: ProductMutationHook;
+    publicInvalidationHook?: PublicInvalidationHook;
 }) {
     const app = express();
     const production = options.production ?? false, ttl = options.sessionTtlSeconds ?? 28800;
@@ -28,16 +32,28 @@ export function createApp(options: {
     const database = () => options.database ?? getPrismaClient();
     const auth = createAuthService(() => authRepository(database()), ttl);
     app.disable('x-powered-by');
-    app.set('trust proxy', false);
+    app.set('trust proxy', options.trustProxyHops ?? 0);
     app.use(helmet());
     app.use(cors({ origin: (origin, callback) => callback(null, origin !== undefined && options.corsOrigins.includes(origin)), credentials: true,
         methods: ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'], allowedHeaders: ['Content-Type', 'X-BCM-Admin'] }));
     app.use(express.json({ limit: '100kb' }));
     app.use('/api/v1/health', healthRouter);
+    let publicCatalog: ReturnType<typeof catalogRouter> | undefined;
+    app.use('/api/v1/public',
+        (_req, res, next) => {
+            res.set('Cache-Control', 'public, max-age=0, s-maxage=300, stale-while-revalidate=86400');
+            next();
+        },
+        (req, res, next) => {
+            publicCatalog ??= catalogRouter(database());
+            publicCatalog(req, res, next);
+        }
+    );
     app.use(['/api/v1/auth', '/api/v1/admin'], (_req, res, next) => { res.set('Cache-Control', 'no-store'); next(); }, protectMutations(options.corsOrigins));
     app.use('/api/v1/auth', authRouter(auth, cookie));
     let admin: ReturnType<typeof adminRouter> | undefined;
     const mutationLimit = requestLimit(120, 60000);
+    const publicInvalidation = options.publicInvalidationHook ?? (() => undefined);
     app.use('/api/v1/admin', requireAdmin(auth, cookie.name), (req, res, next) => {
         if (['GET', 'HEAD', 'OPTIONS'].includes(req.method))
             return next();
@@ -45,8 +61,12 @@ export function createApp(options: {
     }, (req, res, next) => {
         if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method))
             res.on('finish', () => {
-                if (res.statusCode < 400 && req.admin)
+                if (res.statusCode < 400 && req.admin) {
                     logEvent('admin.mutation', { adminId: req.admin.id, status: res.statusCode });
+                    const prefix = req.path.split('/').filter(Boolean)[0];
+                    const tags = adminResourceInvalidationTags(prefix);
+                    if (tags.length) void Promise.resolve(publicInvalidation(tags)).catch(() => logEvent('public.revalidation.failed', { resource: prefix ?? 'unknown' }));
+                }
             });
         next();
     }, (req, res, next) => { admin ??= adminRouter(database(),options.productMutationHook); admin(req, res, next); });

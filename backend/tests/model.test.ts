@@ -12,6 +12,11 @@ import { bannerSchema } from '../src/modules/banners/schema.js';
 import { siteSettingsSchema, whatsappTemplateSchema } from '../src/modules/settings/schema.js';
 import { adminUserSchema } from '../src/modules/auth/schema.js';
 import { structuralSeedSchema } from '../src/infrastructure/prisma/seed-schema.js';
+import { catalogSeedSchema } from '../src/infrastructure/prisma/catalog-seed-schema.js';
+import { readFile } from 'node:fs/promises';
+import { publicBannersQuery, publicProductsQuery } from '../src/modules/catalog/schema.js';
+import { publicProductDto } from '../src/modules/catalog/mapper.js';
+import type { PublicProductRow } from '../src/modules/catalog/repository.js';
 
 const categoryId = randomUUID();
 const attributeId = randomUUID();
@@ -141,7 +146,75 @@ test('seed is structural only and rejects duplicate slugs', () => {
   const category = { name: 'Test', slug: 'test' };
   assert.equal(structuralSeedSchema.safeParse({ categories: [category, category] }).success, false);
 });
+test('media URLs require HTTPS except explicit local development hosts', () => {
+  for (const value of ['https://assets.example/image.jpg', 'http://localhost:3100/logo.jpg', 'http://127.0.0.1:3100/logo.jpg']) {
+    assert.equal(productSchema.safeParse({ ...baseProduct, images: [{ url: value, altText: 'Producto', isPrimary: true }] }).success, true);
+  }
+  for (const value of ['http://example.com/image.jpg', 'http://192.168.1.10/image.jpg', 'https://user:secret@example.com/image.jpg']) {
+    assert.equal(productSchema.safeParse({ ...baseProduct, images: [{ url: value, altText: 'Producto', isPrimary: true }] }).success, false);
+  }
+});
 test('database URL errors never contain credentials', () => {
   assert.throws(() => requireDatabaseUrl(undefined), /DATABASE_URL/);
   assert.throws(() => requireDatabaseUrl('https://user:secret@example.test/db'), (error: unknown) => error instanceof Error && !error.message.includes('secret'));
+});
+
+
+test('public catalog query validates filters, price range and maximum page size', () => {
+  const parsed = publicProductsQuery.parse({ page: '2', pageSize: '60', onSale: 'true', minPrice: '10.00', maxPrice: '20.00' });
+  assert.equal(parsed.page, 2);
+  assert.equal(parsed.pageSize, 60);
+  assert.equal(parsed.onSale, true);
+  assert.equal(parsed.minPrice?.toFixed(2), '10.00');
+  assert.equal(publicProductsQuery.safeParse({ pageSize: '61' }).success, false);
+  assert.equal(publicProductsQuery.safeParse({ minPrice: '20', maxPrice: '10' }).success, false);
+  assert.equal(publicProductsQuery.safeParse({ sort: 'passwordHash' }).success, false);
+});
+
+test('public product mapper never exposes hidden price values', () => {
+  const row = {
+    id: randomUUID(),
+    name: 'Producto privado',
+    slug: 'producto-privado',
+    shortDescription: 'Descripción',
+    price: new Prisma.Decimal('999999.99'),
+    compareAtPrice: new Prisma.Decimal('1200000.00'),
+    showPrice: false,
+    saleMode: 'IN_STOCK',
+    availability: 'AVAILABLE',
+    featured: false,
+    onSale: true,
+    newArrival: false,
+    publishedAt: new Date('2026-09-20T12:00:00Z'),
+    category: { id: randomUUID(), name: 'Categoría', slug: 'categoria' },
+    brand: null,
+    images: []
+  } as PublicProductRow;
+  const dto = publicProductDto(row);
+  assert.equal(dto.price, null);
+  assert.equal(dto.compareAtPrice, null);
+  assert.equal(dto.showPrice, false);
+});
+
+
+test('public banner query accepts only known placements', () => {
+  assert.equal(publicBannersQuery.parse({ placement: 'CATALOG_TOP' }).placement, 'CATALOG_TOP');
+  assert.equal(publicBannersQuery.safeParse({ placement: 'PRIVATE' }).success, false);
+  assert.equal(publicBannersQuery.safeParse({ placement: 'CATALOG_TOP', extra: 'x' }).success, false);
+});
+
+
+test('committed demo catalog seed is valid, diverse and contains exactly 20 products', async () => {
+  const raw = JSON.parse(await readFile(new URL('../prisma/catalog.seed.json', import.meta.url), 'utf8')) as unknown;
+  const seed = catalogSeedSchema.parse(raw);
+  assert.equal(seed.products.length, 20);
+  assert.ok(seed.categories.length >= 6);
+  assert.ok(seed.brands.length >= 8);
+  assert.ok(seed.attributes.length >= 6);
+  assert.equal(new Set(seed.products.map(product => product.slug)).size, seed.products.length);
+  assert.ok(seed.products.some(product => product.showPrice === false));
+  assert.ok(seed.products.some(product => product.onSale));
+  assert.ok(seed.products.some(product => product.featured));
+  assert.ok(seed.products.some(product => product.newArrival));
+  assert.ok(seed.products.every(product => product.attributeValues.length >= 1));
 });

@@ -10,6 +10,8 @@ import { createAttributeService } from '../../src/modules/attributes/service.js'
 import { productRepository } from '../../src/modules/products/repository.js';
 import { createProductService } from '../../src/modules/products/service.js';
 import { seedStructure } from '../../src/infrastructure/prisma/seed.js';
+import { seedCatalog } from '../../src/infrastructure/prisma/catalog-seed.js';
+import { catalogService } from '../../src/modules/catalog/service.js';
 import { Prisma } from '../../src/generated/prisma/client.js';
 
 const client = createPrismaClient(requireDatabaseUrl(process.env.TEST_DATABASE_URL, 'TEST_DATABASE_URL'));
@@ -222,4 +224,103 @@ test('failed transaction rolls back rows already written before a foreign-key er
   }), isForeignKeyError);
   assert.equal(await client.category.count({ where: { slug: slug('rollback-category') } }), 0);
   assert.equal(await client.product.count({ where: { slug: slug('rollback-product') } }), 0);
+});
+
+
+test('public catalog service hides internal prices and returns active catalog campaigns', async () => {
+  const category = await categories.create({ name: 'Public category', slug: slug('public-category'), active: true });
+  const brand = await brands.create({ name: 'Public brand', slug: slug('public-brand'), active: true });
+  await products.create({
+    ...productData(category.id, 'public-hidden'),
+    name: 'Hidden price integration',
+    brandId: brand.id,
+    price: '987654.32',
+    showPrice: false,
+    active: true
+  });
+  const visible = await products.create({
+    ...productData(category.id, 'public-visible'),
+    name: 'Visible price integration',
+    brandId: brand.id,
+    price: '123456.78',
+    showPrice: true,
+    active: true,
+    featured: true
+  });
+  await client.banner.create({
+    data: {
+      title: prefix,
+      subtitle: 'Integration campaign',
+      imageUrl: 'https://assets.example/catalog-banner.jpg',
+      placement: 'CATALOG_TOP',
+      active: true
+    }
+  });
+
+  const service = catalogService(client);
+  const hiddenPage = await service.list({ search: 'Hidden price integration' });
+  assert.equal(hiddenPage.data.length, 1);
+  assert.equal(hiddenPage.data[0]?.price, null);
+  assert.equal(hiddenPage.data[0]?.compareAtPrice, null);
+
+  const visibleDetail = await service.product(visible.slug);
+  assert.equal(visibleDetail.product.price, '123456.78');
+  assert.equal(visibleDetail.product.slug, visible.slug);
+
+  const campaigns = await service.banners('CATALOG_TOP');
+  assert.ok(campaigns.some((banner) => banner.title === prefix));
+});
+
+test('catalog seed is idempotent and preserves rows edited after first import', async () => {
+  const existingSettings = await client.siteSettings.findUnique({ where: { singleton: true } });
+  const categorySlug = slug('catalog-seed-category');
+  const brandSlug = slug('catalog-seed-brand');
+  const attributeSlug = slug('catalog-seed-attribute');
+  const productSlug = slug('catalog-seed-product');
+  const data = {
+    site: { siteName: 'Seed BCM', defaultSeoTitle: 'Seed BCM', defaultSeoDescription: 'Seed description' },
+    categories: [{ name: 'Seed public category', slug: categorySlug, sortOrder: 10 }],
+    brands: [{ name: 'Seed public brand', slug: brandSlug }],
+    attributes: [{
+      name: 'Seed finish',
+      slug: attributeSlug,
+      dataType: 'OPTION' as const,
+      options: [{ label: 'Negro', value: 'black', sortOrder: 10 }]
+    }],
+    categoryAttributes: [{ categorySlug, attributeSlug, required: true, sortOrder: 10 }],
+    products: [{
+      name: 'Seed product',
+      slug: productSlug,
+      shortDescription: 'Seed fixture',
+      categorySlug,
+      brandSlug,
+      price: '100.00',
+      showPrice: true,
+      featured: true,
+      sortOrder: 10,
+      attributeValues: [{ attributeSlug, dataType: 'OPTION' as const, optionValue: 'black' }]
+    }]
+  };
+
+  const first = await seedCatalog(client, data);
+  assert.equal(first.productsCreated, 1);
+  const created = await client.product.findUniqueOrThrow({ where: { slug: productSlug } });
+  const definition = await client.attributeDefinition.findUniqueOrThrow({ where: { slug: attributeSlug } });
+  const seededValue = await client.productAttributeValue.findUniqueOrThrow({ where: { productId_attributeId: { productId: created.id, attributeId: definition.id } }, include: { option: true } });
+  assert.equal(seededValue.dataType, 'OPTION');
+  assert.equal(seededValue.option?.value, 'black');
+  assert.equal(await client.categoryAttribute.count({ where: { categoryId: created.categoryId, attributeId: definition.id } }), 1);
+  await client.product.update({ where: { id: created.id }, data: { name: 'Edited after seed' } });
+
+  const second = await seedCatalog(client, data);
+  assert.equal(second.productsCreated, 0);
+  assert.equal((await client.product.findUniqueOrThrow({ where: { id: created.id } })).name, 'Edited after seed');
+  assert.equal(await client.product.count({ where: { slug: productSlug } }), 1);
+  assert.equal(await client.productAttributeValue.count({ where: { productId: created.id, attributeId: definition.id } }), 1);
+  assert.equal(await client.attributeOption.count({ where: { attributeId: definition.id, value: 'black' } }), 1);
+
+  if (!existingSettings) {
+    const settings = await client.siteSettings.findUnique({ where: { singleton: true } });
+    if (settings) ownedSettings.push(settings.id);
+  }
 });

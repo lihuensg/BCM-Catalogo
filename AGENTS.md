@@ -89,7 +89,7 @@ Antes de tocar código:
 10. Si queda deuda técnica, declararla; no ocultarla.
 
 ## Fuente visual
-`BCM/logo.jpg` es el asset de identidad principal una vez disponible dentro del repositorio.
+`logo.jpg` en la raíz del repositorio es el asset de identidad principal. El frontend usa su copia en `frontend/public/logo.jpg` para servirlo de forma estable.
 Paleta provisional:
 - `#0D1641`
 - `#5D195A`

@@ -16,7 +16,7 @@ Una tarea UI no está terminada hasta revisarse visualmente.
 - cards;
 - grillas;
 - filtros;
-- drawers;
+- menú mobile;
 - búsqueda;
 - detalle;
 - galería;
@@ -66,7 +66,26 @@ No aceptar:
 - tablas ilegibles;
 - componentes improvisados si existe patrón canónico.
 
-## QA de Etapa 04 — Etapa 04
+## Automatización visual
+La suite Playwright usa una DB de test dedicada y fixtures aislados. Captura:
+- panel admin en 360, 430, 768, 1366 y 1920 px;
+- home, catálogo y detalle público en los mismos cinco anchos;
+- screenshots dentro de `artifacts/`, que no se versiona.
 
-Implementación, rutas, componentes, decisiones y procedimiento de validación en
+También valida:
+- ausencia de overflow horizontal global;
+- ausencia de errores React no esperados;
+- precio público oculto;
+- filtros y empty states;
+- ficha técnica y WhatsApp configurado.
+
+Ejecutar:
+```sh
+npm run test:e2e
+```
+
+Requiere `TEST_DATABASE_URL` dedicada y Chromium de Playwright instalado. Nunca usar producción.
+
+## QA de Etapa 04
+Implementación, rutas, componentes, decisiones y procedimiento de validación admin en
 [ADMIN_UI_IMPLEMENTATION.md](ADMIN_UI_IMPLEMENTATION.md).

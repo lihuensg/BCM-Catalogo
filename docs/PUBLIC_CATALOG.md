@@ -118,3 +118,24 @@ Mostrar:
 - paginación;
 - evitar enviar atributos completos de todos los productos en listados;
 - catálogo público cacheado.
+
+
+## Implementación Etapa 05
+La lectura pública se expone bajo `/api/v1/public` con DTOs propios. Estos DTOs son deliberadamente distintos de los administrativos:
+- nunca devuelven precios internos cuando `showPrice=false`;
+- nunca exponen IDs/flags sensibles de administración innecesarios;
+- solo listan productos activos, publicados y pertenecientes a categorías activas;
+- las marcas desactivadas no se usan como filtro público;
+- listados no cargan galería completa ni atributos.
+
+Endpoints:
+- `GET /api/v1/public/home`
+- `GET /api/v1/public/products`
+- `GET /api/v1/public/products/:slug`
+- `GET /api/v1/public/categories`
+- `GET /api/v1/public/brands`
+- `GET /api/v1/public/settings`
+
+El frontend usa Server Components y `fetch` cacheado con revalidación temporal. La home y los listados degradan a estados útiles si todavía no existe una API configurada; no se crean productos mock en frontend.
+
+La capa visual pública vive en `components/catalog` y `features/catalog`, separada del panel admin. El catálogo soporta búsqueda, categoría, marca, orden, páginas especiales (ofertas, nuevos, destacados), detalle, ficha dinámica y CTA WhatsApp basado en settings.

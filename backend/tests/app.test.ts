@@ -3,6 +3,7 @@ import { test } from 'node:test';
 import request from 'supertest';
 import { createApp } from '../src/app.js';
 import { parseEnvironment } from '../src/config/env.js';
+import { adminResourceInvalidationTags } from '../src/shared/public-cache.js';
 
 const origin = 'http://localhost:3000';
 const app = createApp({ corsOrigins: [origin] });
@@ -42,4 +43,22 @@ test('environment rejects invalid ports and CORS origins without exposing values
   assert.throws(() => parseEnvironment({ CORS_ORIGINS: '*' }), /CORS_ORIGINS/);
   assert.throws(() => parseEnvironment({ CORS_ORIGINS: `${origin}/path` }), /CORS_ORIGINS/);
   assert.deepEqual(parseEnvironment({}).CORS_ORIGINS, []);
+  assert.equal(parseEnvironment({}).TRUST_PROXY_HOPS, 0);
+  assert.equal(parseEnvironment({ TRUST_PROXY_HOPS: '1' }).TRUST_PROXY_HOPS, 1);
+  assert.throws(() => parseEnvironment({ TRUST_PROXY_HOPS: '3' }), /TRUST_PROXY_HOPS/);
+  assert.equal(createApp({ corsOrigins: [], trustProxyHops: 1 }).get('trust proxy'), 1);
+  assert.throws(() => parseEnvironment({ FRONTEND_REVALIDATE_URL: 'https://frontend.example/api/revalidate' }), /REVALIDATION_SECRET/);
+  assert.throws(() => parseEnvironment({ REVALIDATION_SECRET: 'x'.repeat(32) }), /REVALIDATION_SECRET/);
+  const revalidation = parseEnvironment({ FRONTEND_REVALIDATE_URL: 'https://frontend.example/api/revalidate', REVALIDATION_SECRET: 'x'.repeat(32) });
+  assert.equal(revalidation.FRONTEND_REVALIDATE_URL, 'https://frontend.example/api/revalidate');
+});
+
+
+test('admin public cache invalidation covers every storefront data family', () => {
+  assert.deepEqual(adminResourceInvalidationTags('categories'), ['public-categories', 'public-products', 'public-home']);
+  assert.deepEqual(adminResourceInvalidationTags('brands'), ['public-brands', 'public-products', 'public-home']);
+  assert.deepEqual(adminResourceInvalidationTags('attributes'), ['public-products']);
+  assert.deepEqual(adminResourceInvalidationTags('banners'), ['public-banners', 'public-home', 'public-products']);
+  assert.deepEqual(adminResourceInvalidationTags('settings'), ['public-settings', 'public-home']);
+  assert.deepEqual(adminResourceInvalidationTags('unknown'), []);
 });

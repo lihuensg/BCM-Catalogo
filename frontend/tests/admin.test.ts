@@ -5,6 +5,8 @@ import { settingsErrors, placeholders } from '../features/settings/model';
 import { masterErrors, formPayload } from '../features/masters/form-model';
 import { ApiFailure, errorMessage } from '../services/admin/errors';
 import { queryString, request } from '../services/admin/client';
+import { catalogQuery, formatAmount, publicPrice, whatsappUrl } from '../features/catalog/model';
+import type { PublicProductListDto, PublicSettingsDto } from '@bcm/shared';
 test('product form validates minimums without preventing incomplete drafts', () => { const value = { ...blankProduct(), name: 'Producto', slug: 'producto', shortDescription: 'Descripción', categoryId: 'category' }; assert.deepEqual(productErrors(value), {}); assert.ok(productErrors({ ...value, slug: 'BAD SLUG' }).slug); assert.equal(value.active, false); });
 test('price validation remains exact for large decimals and hidden internal prices', () => { const value = { ...blankProduct(), price: '9999999999999999.98', compareAtPrice: '9999999999999999.99', showPrice: false }; assert.equal(productErrors(value).compareAtPrice, undefined); assert.ok(productErrors({ ...value, compareAtPrice: value.price }).compareAtPrice); assert.ok(productErrors({ ...value, price: '-1' }).price); assert.equal(priceLabel('1234567890123456.78', false), '1.234.567.890.123.456,78 · Interno'); assert.equal(priceLabel(null, true), 'Sin precio'); });
 test('dynamic attributes preserve explicit false and replace without duplicate ids', () => { const result = replaceAttribute([{ attributeId: 'a', dataType: 'BOOLEAN', booleanValue: true }], 'a', { attributeId: 'a', dataType: 'BOOLEAN', booleanValue: false }); assert.deepEqual(result, [{ attributeId: 'a', dataType: 'BOOLEAN', booleanValue: false }]); assert.deepEqual(replaceAttribute(result, 'a', null), []); });
@@ -33,3 +35,37 @@ finally {
 import {permittedProxyPath,permittedMutation,boundedBody} from '../services/admin/proxy-policy';
 test('proxy rejects traversal, arbitrary origins and missing CSRF before forwarding',()=>{assert.equal(permittedProxyPath(['admin','products']),true);assert.equal(permittedProxyPath(['https:','private']),false);assert.equal(permittedProxyPath(['admin','..']),false);assert.equal(permittedMutation('https://evil.example','http://localhost:3000','1'),false);assert.equal(permittedMutation(null,'http://localhost:3000','1'),false);assert.equal(permittedMutation('http://localhost:3000','http://localhost:3000',null),false);});
 test('proxy bounds streamed bodies even without Content-Length',async()=>{await assert.rejects(boundedBody(new Request('http://localhost',{method:'POST',body:'abcdef'}),4),RangeError);assert.equal(await boundedBody(new Request('http://localhost',{method:'POST',body:'{}'}),4),'{}');});
+
+
+test('public money formatting and hidden prices never leak the internal amount', () => {
+  assert.equal(formatAmount('1234567.80'), '1.234.567,80');
+  const product = { showPrice: false, price: '999999.99' } as PublicProductListDto;
+  assert.equal(publicPrice(product), null);
+});
+
+test('public WhatsApp template uses only public product values and hides price when configured', () => {
+  const settings = {
+    whatsappNumber: '+54 9 11 1234-5678',
+    whatsappMessageTemplate: 'Hola {{productName}} {{productUrl}} {{sku}} {{price}}',
+  } as PublicSettingsDto;
+  const product = { name: 'Producto', slug: 'producto', sku: 'ABC', showPrice: false, price: '100.00' } as PublicProductListDto & { sku: string };
+  const url = whatsappUrl(settings, product, 'https://bcm.example');
+  assert.ok(url?.startsWith('https://wa.me/5491112345678?text='));
+  assert.equal(decodeURIComponent(url ?? '').includes('100,00'), false);
+  assert.match(decodeURIComponent(url ?? ''), /Producto/);
+});
+
+test('public catalog query ignores unknown input and normalizes invalid pagination and sorting', () => {
+  const query = catalogQuery({ page: '-9', search: '  iphone  ', sort: 'privateField', category: 'celulares', unknown: 'secret' });
+  assert.equal(query.page, 1);
+  assert.equal(query.search, 'iphone');
+  assert.equal(query.sort, 'sortOrder');
+  assert.equal(query.category, 'celulares');
+  assert.equal('unknown' in query, false);
+});
+
+
+test('generic WhatsApp CTA omits product template when no product is selected', () => {
+  const settings = { whatsappNumber: '5491112345678', whatsappMessageTemplate: 'Hola {{productName}} {{price}}' } as PublicSettingsDto;
+  assert.equal(whatsappUrl(settings), 'https://wa.me/5491112345678');
+});

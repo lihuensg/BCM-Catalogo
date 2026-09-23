@@ -1,79 +1,47 @@
-# CACHE_AND_DEPLOYMENT.md
+# Cache público y revalidación
 
-## Objetivo
-El visitante no debe esperar el cold start de Render para ver el catálogo ya publicado.
+El storefront usa Server Components y el Data Cache de Next.js. Las lecturas públicas se cachean por tags durante 5 minutos y admiten contenido stale mientras el backend vuelve a estar disponible.
 
-## Infraestructura objetivo
-- Frontend: Vercel o Netlify.
-- Backend: Render.
-- DB: Neon PostgreSQL.
-- Assets: object storage/CDN.
+## Tags
+- `public-home`
+- `public-settings`
+- `public-categories`
+- `public-brands`
+- `public-products`
+- `public-product-<slug>`
 
-## Restricción conocida
-Render Free puede suspender el web service por inactividad. Por eso el storefront no se diseña como SPA que solicita todo el catálogo a Render en cada visita.
+## Invalidación
+Las mutaciones administrativas se confirman primero en PostgreSQL. Después del commit el backend notifica de forma best-effort a `FRONTEND_REVALIDATE_URL`; un fallo de red nunca revierte la mutación ya guardada.
 
-## Estrategia
-### Lectura pública
-Preferir:
-- SSG/ISR;
-- cache del framework/CDN;
-- páginas pre-renderizadas;
-- revalidación por tags/rutas o mecanismo equivalente.
+Productos invalidan catálogo, home y slug actual/anterior. Categorías, marcas, atributos, banners y settings invalidan únicamente las familias públicas relacionadas.
 
-### Mutación admin
-```text
-Admin guarda
-  -> Render API
-  -> PostgreSQL commit
-  -> evento/invocación de revalidación
-  -> frontend invalida rutas/tags afectadas
-  -> siguiente regeneración actualiza cache
-```
+El endpoint frontend `POST /api/revalidate`:
+- exige Bearer secret server-only;
+- compara el secreto en tiempo constante;
+- solo acepta tags del namespace público conocido;
+- limita cada llamada a 30 tags;
+- nunca devuelve el secreto.
 
-## Regla crítica
-Si Render está dormido:
-- Home debe abrir.
-- Catálogo debe abrir.
-- Producto cacheado debe abrir.
-- Categorías cacheadas deben abrir.
-- La última versión publicada sigue visible.
+## Variables
+Backend:
+- `FRONTEND_REVALIDATE_URL`
+- `REVALIDATION_SECRET`
 
-Lo que sí puede esperar cold start:
-- login admin;
-- guardar producto;
-- editar settings;
-- operaciones no cacheadas.
+Frontend:
+- `REVALIDATION_SECRET`
+- `NEXT_PUBLIC_SITE_URL` para URLs canónicas/WhatsApp.
 
-## Fallback
-Nunca reemplazar catálogo cacheado válido por una pantalla vacía porque una revalidación falló.
+URL y secreto de revalidación son opcionales en local, pero deben configurarse juntos en producción.
 
-Mantener stale validado hasta obtener nueva versión.
 
-## Invalidación mínima
-Al modificar producto:
-- producto por slug;
-- catálogo;
-- categoría;
-- marca;
-- home si featured/onSale/new;
-- listados especiales correspondientes.
+## Pre-render de rutas públicas
+Para reducir la dependencia del backend durante navegación pública:
+- productos publicados se enumeran en build mediante `generateStaticParams`;
+- categorías con productos se pre-generan;
+- marcas con productos se pre-generan;
+- home y lecturas compartidas usan fetch cacheado por tags;
+- rutas nuevas creadas después del build siguen permitidas porque los parámetros dinámicos continúan habilitados.
 
-Al modificar categoría/marca:
-- páginas relacionadas;
-- navegación si aplica.
+El helper `getAllPublicProducts` recorre páginas públicas de 60 elementos y limita el precálculo a 100 páginas para evitar builds descontrolados.
 
-Al modificar settings/banner:
-- home/layout correspondiente.
-
-## Desarrollo local
-No depender del cache para ocultar bugs.
-Debe existir modo de desarrollo donde la fuente sea backend real.
-
-## Deploy
-No implementar hasta que:
-- frontend local estable;
-- backend local estable;
-- migrations;
-- seed;
-- tests;
-- documentación actualizada.
+Esto refuerza el objetivo de que las páginas ya publicadas no necesiten despertar Render para cada visita. La primera visita a contenido nuevo posterior al último build puede requerir resolución dinámica, pero luego queda cubierta por cache/revalidación.
