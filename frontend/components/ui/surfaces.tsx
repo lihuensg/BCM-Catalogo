@@ -4,11 +4,12 @@ export function Badge({ children, tone = 'neutral' }: {
     children: ReactNode;
     tone?: 'neutral' | 'success' | 'warning' | 'danger';
 }) { return <span className={'badge badge-' + tone}>{children}</span>; }
-export function Card({ children, title, description }: {
+export function Card({ children, title, description, id }: {
     children: ReactNode;
     title?: string | undefined;
     description?: string | undefined;
-}) { return <section className="card">{title && <header className="section-heading"><h2>{title}</h2>{description && <p>{description}</p>}</header>}{children}</section>; }
+    id?: string | undefined;
+}) { return <section id={id} className="card">{title && <header className="section-heading"><h2>{title}</h2>{description && <p>{description}</p>}</header>}{children}</section>; }
 export function PageHeader({ title, description, actions }: {
     title: string;
     description?: string | undefined;
