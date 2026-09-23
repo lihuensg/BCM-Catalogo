@@ -82,6 +82,10 @@ test('public pages pass responsive smoke QA at required viewports', async ({ pag
       await page.goto(route);
       await expect(page.locator('main')).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBeTruthy();
+      // Playwright hides carets while capturing screenshots. Give React a moment
+      // to finish hydration first so that temporary screenshot styles cannot
+      // race hydration and produce a false-positive mismatch.
+      await page.waitForTimeout(500);
       await page.screenshot({ path: '../artifacts/public-ui-qa/' + width + '-' + name + '.png', fullPage: true });
     }
   }
