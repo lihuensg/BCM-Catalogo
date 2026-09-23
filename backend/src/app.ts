@@ -16,7 +16,7 @@ import type { PrismaClient } from './generated/prisma/client.js';
 import { adminRouter } from './admin-router.js';
 import { catalogRouter } from './modules/catalog/routes.js';
 import { logEvent } from './shared/logger.js';
-import type { PublicInvalidationHook } from './shared/public-cache.js';
+import { adminResourceInvalidationTags, type PublicInvalidationHook } from './shared/public-cache.js';
 export function createApp(options: {
     corsOrigins: readonly string[];
     production?: boolean;
@@ -64,12 +64,7 @@ export function createApp(options: {
                 if (res.statusCode < 400 && req.admin) {
                     logEvent('admin.mutation', { adminId: req.admin.id, status: res.statusCode });
                     const prefix = req.path.split('/').filter(Boolean)[0];
-                    const tags = prefix === 'categories' ? ['public-categories', 'public-products', 'public-home']
-                        : prefix === 'brands' ? ['public-brands', 'public-products', 'public-home']
-                        : prefix === 'attributes' ? ['public-products']
-                        : prefix === 'banners' ? ['public-home']
-                        : prefix === 'settings' ? ['public-settings', 'public-home']
-                        : [];
+                    const tags = adminResourceInvalidationTags(prefix);
                     if (tags.length) void Promise.resolve(publicInvalidation(tags)).catch(() => logEvent('public.revalidation.failed', { resource: prefix ?? 'unknown' }));
                 }
             });

@@ -24,3 +24,21 @@ export function productInvalidationHook(invalidate: PublicInvalidationHook): Pro
         await invalidate(tags);
     };
 }
+
+
+export function adminResourceInvalidationTags(resource: string | undefined): readonly string[] {
+    switch (resource) {
+        case 'categories':
+            return ['public-categories', 'public-products', 'public-home'];
+        case 'brands':
+            return ['public-brands', 'public-products', 'public-home'];
+        case 'attributes':
+            return ['public-products'];
+        case 'banners':
+            return ['public-banners', 'public-home', 'public-products'];
+        case 'settings':
+            return ['public-settings', 'public-home'];
+        default:
+            return [];
+    }
+}

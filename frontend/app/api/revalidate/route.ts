@@ -2,7 +2,7 @@ import { timingSafeEqual } from 'node:crypto';
 import { revalidateTag } from 'next/cache';
 import type { NextRequest } from 'next/server';
 
-const allowed = /^(?:public-(?:home|settings|categories|brands|products)|public-product-[a-z0-9]+(?:-[a-z0-9]+)*)$/;
+const allowed = /^(?:public-(?:home|settings|categories|brands|products|banners)|public-product-[a-z0-9]+(?:-[a-z0-9]+)*)$/;
 
 function authenticated(request: NextRequest) {
   const secret = process.env.REVALIDATION_SECRET;
