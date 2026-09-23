@@ -3,6 +3,10 @@ import { notFound } from 'next/navigation';
 import { CatalogListing } from '@/components/catalog/catalog-listing';
 import { getCategories } from '@/services/public/client';
 
+export async function generateStaticParams() {
+  return (await getCategories()).filter(category => category.productCount > 0).map(category => ({ slug: category.slug }));
+}
+
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;

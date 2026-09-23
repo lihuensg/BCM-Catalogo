@@ -4,8 +4,12 @@ import { notFound } from 'next/navigation';
 import { ProductSection } from '@/components/catalog/product-section';
 import { ProductGallery } from '@/components/catalog/product-gallery';
 import { availabilityLabel, formatAmount, whatsappUrl } from '@/features/catalog/model';
-import { getProduct, getSettings, PublicNotFoundError } from '@/services/public/client';
+import { getAllPublicProducts, getProduct, getSettings, PublicNotFoundError } from '@/services/public/client';
 import { productJsonLd, safeJsonLd } from '@/features/catalog/seo';
+
+export async function generateStaticParams() {
+  return (await getAllPublicProducts()).map(product => ({ slug: product.slug }));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   try {

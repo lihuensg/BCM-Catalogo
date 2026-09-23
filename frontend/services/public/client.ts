@@ -11,3 +11,18 @@ export async function getBrands(){try{return await data<PublicBrandDto[]>('/publ
 export async function getBanners(placement:BannerPlacement){try{return await data<PublicBannerDto[]>('/public/banners?placement='+encodeURIComponent(placement),['public-banners',placement==='HOME_HERO'||placement==='HOME_SECONDARY'?'public-home':'public-products']);}catch{return [];}}
 export async function getProducts(q:PublicProductListQuery):Promise<PageResponse<PublicProductListDto>|null>{try{if(!baseUrl)return null;const r=await fetch(baseUrl+'/public/products'+qs(q),{headers:{Accept:'application/json'},next:{revalidate,tags:['public-products']}});return r.ok?await r.json() as PageResponse<PublicProductListDto>:null;}catch{return null;}}
 export async function getProduct(slug:string){return data<{product:PublicProductDetailDto;related:PublicProductListDto[]}>('/public/products/'+encodeURIComponent(slug),['public-products','public-product-'+slug]);}
+
+
+export async function getAllPublicProducts(): Promise<PublicProductListDto[]> {
+  const first = await getProducts({ page: 1, pageSize: 60, sort: 'publishedAt', order: 'desc' });
+  if (!first) return [];
+  const products = [...first.data];
+  const pages = Math.min(first.meta.totalPages, 100);
+  if (pages > 1) {
+    const rest = await Promise.all(Array.from({ length: pages - 1 }, (_, index) =>
+      getProducts({ page: index + 2, pageSize: 60, sort: 'publishedAt', order: 'desc' })
+    ));
+    for (const page of rest) if (page) products.push(...page.data);
+  }
+  return products;
+}

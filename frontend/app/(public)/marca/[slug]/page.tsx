@@ -3,6 +3,10 @@ import { notFound } from 'next/navigation';
 import { CatalogListing } from '@/components/catalog/catalog-listing';
 import { getBrands } from '@/services/public/client';
 
+export async function generateStaticParams() {
+  return (await getBrands()).filter(brand => brand.productCount > 0).map(brand => ({ slug: brand.slug }));
+}
+
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
