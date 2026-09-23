@@ -144,6 +144,14 @@ test('seed is structural only and rejects duplicate slugs', () => {
   const category = { name: 'Test', slug: 'test' };
   assert.equal(structuralSeedSchema.safeParse({ categories: [category, category] }).success, false);
 });
+test('media URLs require HTTPS except explicit local development hosts', () => {
+  for (const value of ['https://assets.example/image.jpg', 'http://localhost:3100/logo.jpg', 'http://127.0.0.1:3100/logo.jpg']) {
+    assert.equal(productSchema.safeParse({ ...baseProduct, images: [{ url: value, altText: 'Producto', isPrimary: true }] }).success, true);
+  }
+  for (const value of ['http://example.com/image.jpg', 'http://192.168.1.10/image.jpg', 'https://user:secret@example.com/image.jpg']) {
+    assert.equal(productSchema.safeParse({ ...baseProduct, images: [{ url: value, altText: 'Producto', isPrimary: true }] }).success, false);
+  }
+});
 test('database URL errors never contain credentials', () => {
   assert.throws(() => requireDatabaseUrl(undefined), /DATABASE_URL/);
   assert.throws(() => requireDatabaseUrl('https://user:secret@example.test/db'), (error: unknown) => error instanceof Error && !error.message.includes('secret'));
