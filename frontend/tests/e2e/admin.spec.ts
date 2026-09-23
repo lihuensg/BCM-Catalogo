@@ -45,7 +45,28 @@ test('master forms persist categories, brands, options, associations and banners
     await page.getByRole('dialog').getByRole('button', { name: 'Guardar', exact: true }).click();
     await expect(page.getByRole('cell', { name: f.prefix + '-banner', exact: true })).toBeVisible();
 });
-test('settings validate placeholders and save actual configuration', async ({ page }) => { const f = fixture(); await login(page); await page.goto('/admin/configuracion'); await page.getByLabel('Nombre del sitio', { exact: true }).fill(f.prefix); await page.getByLabel('Título SEO predeterminado', { exact: true }).fill('QA BCM'); await page.getByLabel('Descripción SEO predeterminada', { exact: true }).fill('Configuración temporal de pruebas'); await page.getByLabel('Número de WhatsApp', { exact: true }).fill('5491112345678'); await page.getByLabel('Mensaje de WhatsApp', { exact: true }).fill('{{unsupported}}'); await page.getByRole('button', { name: 'Guardar configuración' }).click(); await expect(page.getByText('Usá únicamente los placeholders indicados, sin modificar las llaves.')).toBeVisible(); await page.getByLabel('Número de WhatsApp', { exact: true }).fill(''); await page.getByLabel('Mensaje de WhatsApp', { exact: true }).fill(''); await page.getByRole('button', { name: 'Guardar configuración' }).click(); await expect(page.getByRole('status').filter({ hasText: 'Configuración guardada.' })).toBeVisible(); await page.reload(); await expect(page.getByLabel('Nombre del sitio', { exact: true })).toHaveValue(f.prefix); });
+test('settings validate placeholders and save actual configuration', async ({ page }) => {
+    const f = fixture();
+    await login(page);
+    await page.goto('/admin/configuracion');
+    await page.getByLabel('Nombre del sitio', { exact: true }).fill(f.prefix);
+    await page.getByLabel('Título SEO predeterminado', { exact: true }).fill('QA BCM');
+    await page.getByLabel('Descripción SEO predeterminada', { exact: true }).fill('Configuración temporal de pruebas');
+    await page.getByLabel('Número de WhatsApp', { exact: true }).fill('5491112345678');
+    await page.getByLabel('Mensaje de WhatsApp', { exact: true }).fill('{{unsupported}}');
+    await page.getByRole('button', { name: 'Guardar configuración' }).click();
+    await expect(page.getByText('Usá únicamente los placeholders indicados, sin modificar las llaves.')).toBeVisible();
+
+    // Restore a valid public-facing configuration instead of clearing fields that
+    // the storefront E2E suite intentionally consumes later in the same run.
+    await page.getByLabel('Mensaje de WhatsApp', { exact: true }).fill('Hola, consulto por {{productName}} {{productUrl}} {{sku}} {{price}}');
+    await page.getByLabel('Instagram', { exact: true }).fill('https://instagram.com/bcm.qa');
+    await page.getByRole('button', { name: 'Guardar configuración' }).click();
+    await expect(page.getByRole('status').filter({ hasText: 'Configuración guardada.' })).toBeVisible();
+    await page.reload();
+    await expect(page.getByLabel('Nombre del sitio', { exact: true })).toHaveValue(f.prefix);
+    await expect(page.getByLabel('Número de WhatsApp', { exact: true })).toHaveValue('5491112345678');
+});
 test('all admin screens remain usable across five viewports with no React errors', async ({ page }) => { test.setTimeout(240000); const errors: string[] = []; page.on('pageerror', e => errors.push(e.message)); page.on('console', msg => { if (msg.type() === 'error' && !msg.text().includes('Failed to load resource'))
     errors.push(msg.text()); }); await login(page); mkdirSync('../artifacts/ui-qa', { recursive: true }); for (const width of [360, 430, 768, 1366, 1920]) {
     await page.setViewportSize({ width, height: 900 });
