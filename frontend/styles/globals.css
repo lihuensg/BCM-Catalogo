@@ -146,3 +146,9 @@ fieldset {border:0;padding:0;margin:0;min-width:0;} fieldset:disabled {opacity:.
 
 /* --- Mobile safe-area refinement --- */
 @media(max-width:800px){.product-mobile-cta{bottom:max(1rem,env(safe-area-inset-bottom));}.public-footer-wrap{padding-bottom:0}.public-shell:has(.product-mobile-cta) .public-footer-wrap{padding-bottom:5rem}}
+
+
+/* --- Restrained storefront motion --- */
+@keyframes bcm-orbit{from{transform:rotate(-16deg)}to{transform:rotate(344deg)}}.hero-orbit{animation:bcm-orbit 22s linear infinite;transform-origin:center}.campaign-card img,.catalog-banner img{transition:transform .55s cubic-bezier(.2,.7,.2,1),filter .55s ease}.campaign-card,.catalog-banner{transition:box-shadow .3s ease,transform .3s ease}
+@media(hover:hover) and (pointer:fine){.campaign-card:hover,.catalog-banner:hover{transform:translateY(-3px);box-shadow:0 20px 50px #19066018}.campaign-card:hover img,.catalog-banner:hover img{transform:scale(1.025);filter:saturate(1.06)}}
+@media(prefers-reduced-motion:reduce){.hero-orbit{animation:none!important}.campaign-card,.catalog-banner,.campaign-card img,.catalog-banner img{transition:none!important}.campaign-card:hover,.catalog-banner:hover,.campaign-card:hover img,.catalog-banner:hover img{transform:none!important}}
