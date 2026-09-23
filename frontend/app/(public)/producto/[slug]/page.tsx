@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ProductSection } from '@/components/catalog/product-section';
+import { ProductGallery } from '@/components/catalog/product-gallery';
 import { availabilityLabel, formatAmount, whatsappUrl } from '@/features/catalog/model';
 import { getProduct, getSettings, PublicNotFoundError } from '@/services/public/client';
 
@@ -38,7 +38,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const { product, related } = payload;
   const price = product.showPrice && product.price ? formatAmount(product.price) : null;
   const whatsapp = whatsappUrl(settings, product, process.env.NEXT_PUBLIC_SITE_URL ?? '');
-  const image = product.images[0];
 
   return <>
     <article className="product-detail container">
@@ -49,16 +48,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <span>{product.name}</span>
       </nav>
       <div className="product-detail-grid">
-        <div className="product-gallery">
-          {product.images.length > 1 && <div className="product-thumbs">
-            {product.images.slice(0, 4).map((item, index) => <div className="product-thumb" key={item.url + index}>
-              <Image src={item.url} alt={item.altText} width={90} height={90} unoptimized />
-            </div>)}
-          </div>}
-          <div className="product-main-image">
-            {image ? <Image src={image.url} alt={image.altText} width={720} height={720} priority unoptimized /> : <span className="product-fallback">BCM</span>}
-          </div>
-        </div>
+        <ProductGallery images={product.images} productName={product.name} />
         <div className="product-info">
           <div className="product-brand">{product.brand?.name ?? product.category.name}</div>
           <h1>{product.name}</h1>

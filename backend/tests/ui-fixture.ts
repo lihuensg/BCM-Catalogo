@@ -58,7 +58,10 @@ try {
         newArrival: true,
         publishedAt: new Date(),
         sortOrder: 1,
-        images: { create: { url: 'http://localhost:3100/logo.jpg', altText: 'Logo BCM en producto público QA', isPrimary: true } }
+        images: { create: [
+          { url: 'http://localhost:3100/logo.jpg', altText: 'Logo BCM en producto público QA', isPrimary: true, sortOrder: 1 },
+          { url: 'http://localhost:3100/logo.jpg?gallery=2', altText: 'Segunda imagen BCM de prueba', isPrimary: false, sortOrder: 2 }
+        ] }
       }
     });
     await db.productAttributeValue.create({

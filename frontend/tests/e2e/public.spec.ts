@@ -34,6 +34,9 @@ test('product detail renders dynamic specs, availability and configured WhatsApp
   await expect(page.getByRole('heading', { name: 'Producto público QA' })).toBeVisible();
   await expect(page.getByText('Valor público QA', { exact: true })).toBeVisible();
   await expect(page.getByText('Disponible', { exact: true })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'Logo BCM en producto público QA' })).toBeVisible();
+  await page.getByRole('button', { name: 'Ver imagen 2: Segunda imagen BCM de prueba' }).click();
+  await expect(page.getByRole('img', { name: 'Segunda imagen BCM de prueba' })).toBeVisible();
 
   const whatsapp = page.getByRole('link', { name: 'Consultar por WhatsApp' });
   await expect(whatsapp).toBeVisible();
