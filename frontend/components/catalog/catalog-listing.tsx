@@ -45,7 +45,7 @@ export async function CatalogListing({ pathname, params, title, description, for
     </section>}
     <div className="catalog-layout container">
       <aside className="catalog-filters">
-        <details className="catalog-filter-panel">
+        <details className="catalog-filter-panel" open>
           <summary>Filtros y orden</summary>
           <div className="catalog-filter-content">
             <h2>Filtrar catálogo</h2>
@@ -84,7 +84,10 @@ export async function CatalogListing({ pathname, params, title, description, for
       </aside>
       <section className="catalog-content" aria-live="polite">
         <div className="catalog-toolbar">
-          <span>{meta ? <><strong>{meta.total}</strong> productos</> : 'Catálogo temporalmente no disponible'}</span>
+          <div>
+            <strong>{meta ? meta.total : 0}</strong> {meta?.total === 1 ? 'producto' : 'productos'}
+            <span className="catalog-toolbar-note"> · Encontrá tu próxima elección</span>
+          </div>
           <span>Página {meta?.page ?? 1}</span>
         </div>
         {result === null

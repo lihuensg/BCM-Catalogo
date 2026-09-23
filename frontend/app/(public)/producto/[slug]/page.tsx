@@ -69,16 +69,24 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             {product.newArrival && <span className="store-badge new">Nuevo</span>}
             {product.saleMode === 'MADE_TO_ORDER' && <span className="store-badge order">Por encargo</span>}
           </div>
-          <div className="product-detail-price">
-            {price ? <><strong>{price}</strong>{product.onSale && product.compareAtPrice && <del>{formatAmount(product.compareAtPrice)}</del>}</> : <strong>Consultar precio</strong>}
+          <div className="product-purchase-panel">
+            <div className="product-purchase-label">¿Te interesa este producto?</div>
+            <div className="product-detail-price">
+              {price ? <><strong>{price}</strong>{product.onSale && product.compareAtPrice && <del>{formatAmount(product.compareAtPrice)}</del>}</> : <strong>Consultar precio</strong>}
+            </div>
+            <div className={'availability-line' + (product.availability === 'OUT_OF_STOCK' ? ' out' : '')}>{availabilityLabel[product.availability]}</div>
+            <div className="product-cta">
+              {whatsapp && <a className="button product-primary-cta" href={whatsapp} target="_blank" rel="noreferrer">Consultar por WhatsApp <span aria-hidden="true">→</span></a>}
+              <Link className="button button-secondary" href="/catalogo">Seguir explorando</Link>
+            </div>
+            <div className="product-assurances" aria-label="Información de compra">
+              <span><b>Contacto directo</b><small>Consultá este producto con BCM.</small></span>
+              <span><b>{product.showPrice ? 'Precio publicado' : 'Precio a consultar'}</b><small>{product.showPrice ? 'El valor mostrado corresponde a la publicación actual.' : 'Solicitá el valor actualizado por WhatsApp.'}</small></span>
+              <span><b>{product.saleMode === 'MADE_TO_ORDER' ? 'Producto por encargo' : 'Venta de stock'}</b><small>{availabilityLabel[product.availability]}</small></span>
+            </div>
           </div>
-          <div className={'availability-line' + (product.availability === 'OUT_OF_STOCK' ? ' out' : '')}>{availabilityLabel[product.availability]}</div>
-          {product.fullDescription && <p>{product.fullDescription}</p>}
-          <div className="product-cta">
-            {whatsapp && <a className="button" href={whatsapp} target="_blank" rel="noreferrer">Consultar por WhatsApp</a>}
-            <Link className="button button-secondary" href="/catalogo">Seguir explorando</Link>
-          </div>
-          {product.sku && <small>SKU: {product.sku}</small>}
+          {product.fullDescription && <div className="product-description-block"><h2>Sobre este producto</h2><p>{product.fullDescription}</p></div>}
+          {product.sku && <small className="product-sku">SKU: {product.sku}</small>}
         </div>
       </div>
       {!!product.attributes.length && <section className="specs">

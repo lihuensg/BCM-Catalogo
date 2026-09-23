@@ -18,6 +18,14 @@ export function formatAmount(value: string | null) {
 export function publicPrice(product: Pick<PublicProductListDto, 'showPrice' | 'price'>) {
   return product.showPrice && product.price ? formatAmount(product.price) : null;
 }
+
+export function discountPercentage(product: Pick<PublicProductListDto, 'price' | 'compareAtPrice' | 'showPrice' | 'onSale'>) {
+  if (!product.onSale || !product.showPrice || !product.price || !product.compareAtPrice) return null;
+  const current = Number(product.price);
+  const previous = Number(product.compareAtPrice);
+  if (!Number.isFinite(current) || !Number.isFinite(previous) || current <= 0 || previous <= current) return null;
+  return Math.round((1 - current / previous) * 100);
+}
 export function whatsappUrl(
   settings: PublicSettingsDto | null,
   product?: Pick<PublicProductListDto, 'name' | 'slug' | 'price' | 'showPrice'> & { sku?: string | null },

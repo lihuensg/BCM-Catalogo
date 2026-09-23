@@ -46,6 +46,12 @@ export default async function HomePage() {
       </div>
     </section>}
 
+    <section className="shopping-promises container" aria-label="Cómo comprar en BCM">
+      <div className="promise-item"><span className="promise-icon" aria-hidden="true">01</span><div><strong>Explorá fácil</strong><span>Categorías, marcas y filtros para encontrar rápido lo que buscás.</span></div></div>
+      <div className="promise-item"><span className="promise-icon" aria-hidden="true">02</span><div><strong>Consultá directo</strong><span>Contactá a BCM por WhatsApp desde cada producto, sin pasos innecesarios.</span></div></div>
+      <div className="promise-item"><span className="promise-icon" aria-hidden="true">03</span><div><strong>También por encargo</strong><span>Identificá claramente los productos disponibles bajo pedido.</span></div></div>
+    </section>
+
     {!!home?.categories.length && <section className="public-section">
       <div className="container">
         <div className="section-head">
@@ -54,7 +60,10 @@ export default async function HomePage() {
         </div>
         <div className="category-grid">
           {home.categories.filter(category => category.productCount > 0).slice(0, 8).map(category => <Link className="category-card" key={category.id} href={'/categoria/' + category.slug}>
-            {category.imageUrl && <Image src={category.imageUrl} alt="" fill unoptimized sizes="25vw" />}
+            {category.imageUrl
+              ? <Image src={category.imageUrl} alt="" fill unoptimized sizes="25vw" />
+              : <span className="category-monogram" aria-hidden="true">{category.name.slice(0, 2).toUpperCase()}</span>}
+            <span className="category-card-arrow" aria-hidden="true">↗</span>
             <strong>{category.name}</strong><span>{category.productCount} productos</span>
           </Link>)}
         </div>
