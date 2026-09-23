@@ -12,7 +12,10 @@ test('public storefront exposes published catalog data without leaking hidden pr
 
   await page.goto('/');
   await expect(page.getByRole('heading', { name: data.prefix + '-hero' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Ver catálogo QA' })).toHaveAttribute('href', '/catalogo');
   await expect(page.getByRole('link', { name: /Producto público QA/ })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Hablar por WhatsApp' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Ver Instagram' })).toHaveAttribute('href', 'https://instagram.com/bcm.qa');
 
   await page.goto('/catalogo?search=' + encodeURIComponent('Producto público QA'));
   await expect(page.getByRole('link', { name: /Producto público QA/ })).toBeVisible();

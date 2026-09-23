@@ -95,7 +95,8 @@ try {
         heroTitle: 'Catálogo BCM de prueba',
         heroSubtitle: 'Validación integral del storefront público.',
         whatsappNumber: '5491112345678',
-        whatsappMessageTemplate: 'Hola, consulto por {{productName}} {{productUrl}} {{sku}} {{price}}'
+        whatsappMessageTemplate: 'Hola, consulto por {{productName}} {{productUrl}} {{sku}} {{price}}',
+        instagramUrl: 'https://instagram.com/bcm.qa'
       }
     });
 
@@ -104,6 +105,8 @@ try {
         title: prefix + '-hero',
         subtitle: 'Hero público controlado por E2E',
         imageUrl: 'http://localhost:3100/logo.jpg',
+        ctaText: 'Ver catálogo QA',
+        ctaHref: '/catalogo',
         placement: 'HOME_HERO',
         active: true,
         sortOrder: 1
