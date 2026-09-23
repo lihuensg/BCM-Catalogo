@@ -130,3 +130,11 @@ fieldset {border:0;padding:0;margin:0;min-width:0;} fieldset:disabled {opacity:.
 @media(max-width:800px){.shopping-promises{grid-template-columns:1fr;margin-top:-.5rem}.promise-item{padding:1rem 1.1rem}.product-assurances{grid-template-columns:1fr}.catalog-filter-panel:not([open])>.catalog-filter-content{display:none}}
 @media(max-width:520px){.shopping-promises{margin-inline:auto}.product-card-action{display:none}.product-purchase-panel{padding:1rem;border-radius:16px}.product-purchase-panel .product-cta{display:grid}.product-primary-cta{width:100%}.category-monogram{font-size:3.5rem!important}}
 @media(prefers-reduced-motion:reduce){.product-card,.product-media img,.product-card-glow,.product-card-action span,.category-card,.category-card-arrow,.category-card:before,.product-primary-cta span{transition:none!important}.product-card:hover,.category-card:hover:before{transform:none!important}}
+
+
+/* --- Header and mobile product CTA polish --- */
+.header-whatsapp{display:inline-flex;align-items:center;gap:.45rem}.header-whatsapp span{font-size:.9rem;transition:transform .2s ease}.header-whatsapp:hover span{transform:translate(2px,-2px)}.header-search button{display:grid;place-items:center}.header-search:focus-within{border-color:#cfc0e3;box-shadow:0 0 0 3px #6d45b514}.header-search input::placeholder{color:#9a92a5}
+.product-mobile-cta{display:none}
+@media(max-width:800px){.product-mobile-cta{position:fixed;z-index:40;left:1rem;right:1rem;bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.75rem .8rem .75rem 1rem;border:1px solid #ded4ea;border-radius:18px;background:#fffffff2;backdrop-filter:blur(14px);box-shadow:0 18px 55px #1906602b}.product-mobile-cta>div{display:grid;gap:.08rem;min-width:0}.product-mobile-cta small{max-width:15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--color-muted);font-size:.68rem}.product-mobile-cta strong{font-size:.9rem}.product-mobile-cta .button{flex:0 0 auto;min-height:44px}.public-footer-wrap{padding-bottom:5rem}}
+@media(min-width:801px){.public-footer-wrap{padding-bottom:0}}
+@media(prefers-reduced-motion:reduce){.header-whatsapp span{transition:none!important}.header-whatsapp:hover span{transform:none!important}}

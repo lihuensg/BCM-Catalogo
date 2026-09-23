@@ -97,5 +97,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       </section>}
     </article>
     <ProductSection eyebrow="TAMBIÉN TE PUEDE INTERESAR" title="Productos relacionados" href={'/categoria/' + product.category.slug} products={related} alt />
+    {whatsapp && <div className="product-mobile-cta" role="region" aria-label="Consulta rápida del producto">
+      <div><small>{product.name}</small><strong>{price ?? 'Consultar precio'}</strong></div>
+      <a className="button" href={whatsapp} target="_blank" rel="noreferrer">Consultar</a>
+    </div>}
   </>;
 }
