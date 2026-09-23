@@ -4,6 +4,7 @@ import type { PublicProductListQuery } from '@bcm/shared';
 import { getBanners, getBrands, getCategories, getProducts } from '@/services/public/client';
 import { availabilityOptions, catalogQuery, saleModeLabel } from '@/features/catalog/model';
 import { ProductCard } from './product-card';
+import { CatalogFilterPanel } from './catalog-filter-panel';
 
 function pageHref(path: string, params: Record<string, string | string[] | undefined>, page: number) {
   const query = new URLSearchParams();
@@ -45,11 +46,9 @@ export async function CatalogListing({ pathname, params, title, description, for
     </section>}
     <div className="catalog-layout container">
       <aside className="catalog-filters">
-        <details className="catalog-filter-panel" open>
-          <summary>Filtros y orden</summary>
-          <div className="catalog-filter-content">
-            <h2>Filtrar catálogo</h2>
-            <form action={pathname}>
+        <CatalogFilterPanel>
+          <h2>Filtrar catálogo</h2>
+          <form action={pathname}>
           <label>Buscar<input name="search" defaultValue={query.search ?? ''} placeholder="Nombre, marca..." /></label>
           {!forced.category && <label>Categoría<select name="category" defaultValue={query.category ?? ''}>
             <option value="">Todas</option>{categories.filter(item => item.productCount > 0).map(item => <option key={item.id} value={item.slug}>{item.name}</option>)}
@@ -77,10 +76,9 @@ export async function CatalogListing({ pathname, params, title, description, for
           </select></label>
           <label>Dirección<select name="order" defaultValue={query.order}><option value="asc">Ascendente</option><option value="desc">Descendente</option></select></label>
           <button className="button" type="submit">Aplicar filtros</button>
-              <Link className="button button-secondary" href={pathname}>Limpiar</Link>
-            </form>
-          </div>
-        </details>
+            <Link className="button button-secondary" href={pathname}>Limpiar</Link>
+          </form>
+        </CatalogFilterPanel>
       </aside>
       <section className="catalog-content" aria-live="polite">
         <div className="catalog-toolbar">
