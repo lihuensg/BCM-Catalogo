@@ -21,6 +21,7 @@ export function createApp(options: {
     corsOrigins: readonly string[];
     production?: boolean;
     sessionTtlSeconds?: number;
+    trustProxyHops?: number;
     database?: PrismaClient;
     productMutationHook?: ProductMutationHook;
     publicInvalidationHook?: PublicInvalidationHook;
@@ -31,7 +32,7 @@ export function createApp(options: {
     const database = () => options.database ?? getPrismaClient();
     const auth = createAuthService(() => authRepository(database()), ttl);
     app.disable('x-powered-by');
-    app.set('trust proxy', false);
+    app.set('trust proxy', options.trustProxyHops ?? 0);
     app.use(helmet());
     app.use(cors({ origin: (origin, callback) => callback(null, origin !== undefined && options.corsOrigins.includes(origin)), credentials: true,
         methods: ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'], allowedHeaders: ['Content-Type', 'X-BCM-Admin'] }));

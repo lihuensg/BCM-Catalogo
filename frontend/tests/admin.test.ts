@@ -63,3 +63,9 @@ test('public catalog query ignores unknown input and normalizes invalid paginati
   assert.equal(query.category, 'celulares');
   assert.equal('unknown' in query, false);
 });
+
+
+test('generic WhatsApp CTA omits product template when no product is selected', () => {
+  const settings = { whatsappNumber: '5491112345678', whatsappMessageTemplate: 'Hola {{productName}} {{price}}' } as PublicSettingsDto;
+  assert.equal(whatsappUrl(settings), 'https://wa.me/5491112345678');
+});

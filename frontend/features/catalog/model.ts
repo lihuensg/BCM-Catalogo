@@ -26,7 +26,7 @@ export function whatsappUrl(
   if (!settings?.whatsappNumber) return null;
   const number = settings.whatsappNumber.replace(/\D/g, '');
   if (!number) return null;
-  let template = settings.whatsappMessageTemplate ?? '';
+  let template = product ? settings.whatsappMessageTemplate ?? '' : '';
   const values: Record<string, string> = {
     productName: product?.name ?? '',
     productUrl: product ? origin.replace(/\/$/, '') + '/producto/' + product.slug : '',

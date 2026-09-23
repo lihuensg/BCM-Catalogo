@@ -9,6 +9,7 @@ const app = createApp({
     corsOrigins: env.CORS_ORIGINS,
     production: env.NODE_ENV === 'production',
     sessionTtlSeconds: env.SESSION_TTL_SECONDS,
+    trustProxyHops: env.TRUST_PROXY_HOPS,
     productMutationHook: productInvalidationHook(invalidate),
     publicInvalidationHook: invalidate
 });
