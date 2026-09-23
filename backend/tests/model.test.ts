@@ -12,7 +12,7 @@ import { bannerSchema } from '../src/modules/banners/schema.js';
 import { siteSettingsSchema, whatsappTemplateSchema } from '../src/modules/settings/schema.js';
 import { adminUserSchema } from '../src/modules/auth/schema.js';
 import { structuralSeedSchema } from '../src/infrastructure/prisma/seed-schema.js';
-import { publicProductsQuery } from '../src/modules/catalog/schema.js';
+import { publicBannersQuery, publicProductsQuery } from '../src/modules/catalog/schema.js';
 import { publicProductDto } from '../src/modules/catalog/mapper.js';
 import type { PublicProductRow } from '../src/modules/catalog/repository.js';
 
@@ -192,4 +192,11 @@ test('public product mapper never exposes hidden price values', () => {
   assert.equal(dto.price, null);
   assert.equal(dto.compareAtPrice, null);
   assert.equal(dto.showPrice, false);
+});
+
+
+test('public banner query accepts only known placements', () => {
+  assert.equal(publicBannersQuery.parse({ placement: 'CATALOG_TOP' }).placement, 'CATALOG_TOP');
+  assert.equal(publicBannersQuery.safeParse({ placement: 'PRIVATE' }).success, false);
+  assert.equal(publicBannersQuery.safeParse({ placement: 'CATALOG_TOP', extra: 'x' }).success, false);
 });

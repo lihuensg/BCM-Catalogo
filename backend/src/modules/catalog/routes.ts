@@ -12,5 +12,6 @@ export function catalogRouter(db: PrismaClient) {
     router.get('/categories', controller.categories);
     router.get('/brands', controller.brands);
     router.get('/settings', controller.settings);
+    router.get('/banners', controller.banners);
     return router;
 }

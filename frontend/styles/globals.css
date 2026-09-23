@@ -112,3 +112,6 @@ fieldset {border:0;padding:0;margin:0;min-width:0;} fieldset:disabled {opacity:.
 @media(max-width:520px){.campaign-copy{padding:1.4rem}.campaign-card{min-height:200px}.contact-actions .button{width:100%}}
 
 .product-thumb{appearance:none;padding:0;cursor:pointer;transition:border-color var(--transition-fast),box-shadow var(--transition-fast),transform var(--transition-fast)}.product-thumb:hover{transform:translateY(-1px);border-color:#cfc4dc}.product-thumb[data-selected=true]{border-color:var(--color-brand);box-shadow:0 0 0 2px #1906601f}.product-gallery-empty{grid-template-columns:1fr}
+
+.catalog-banner-wrap{padding:0 0 1.5rem}.catalog-banner{position:relative;isolation:isolate;overflow:hidden;min-height:190px;border-radius:24px;background:#18064d;color:white}.catalog-banner img{object-fit:cover;z-index:-2}.catalog-banner-overlay{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#18064de8,#18064d90 55%,transparent)}.catalog-banner-copy{padding:2rem;max-width:38rem}.catalog-banner-copy h2{font-size:clamp(1.5rem,3vw,2.5rem);line-height:1.05;letter-spacing:-.04em;margin:0}.catalog-banner-copy p{margin:.65rem 0;color:#eee6f6}.catalog-banner-copy a{font-size:.82rem;font-weight:800}
+@media(max-width:520px){.catalog-banner{min-height:170px}.catalog-banner-copy{padding:1.35rem}}

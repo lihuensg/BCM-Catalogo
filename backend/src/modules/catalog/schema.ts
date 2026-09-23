@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Availability, SaleMode } from '../../generated/prisma/enums.js';
+import { Availability, BannerPlacement, SaleMode } from '../../generated/prisma/enums.js';
 import { moneySchema, slugSchema } from '../../shared/model-validation.js';
 import { queryBoolean } from '../../shared/pagination.js';
 
@@ -25,3 +25,5 @@ export const publicProductsQuery = z.strictObject({
 });
 
 export const slugParams = z.strictObject({ slug: slugSchema });
+
+export const publicBannersQuery = z.strictObject({ placement: z.enum(BannerPlacement) });

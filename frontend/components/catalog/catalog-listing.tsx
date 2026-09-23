@@ -1,6 +1,7 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { PublicProductListQuery } from '@bcm/shared';
-import { getBrands, getCategories, getProducts } from '@/services/public/client';
+import { getBanners, getBrands, getCategories, getProducts } from '@/services/public/client';
 import { availabilityOptions, catalogQuery, saleModeLabel } from '@/features/catalog/model';
 import { ProductCard } from './product-card';
 
@@ -22,7 +23,7 @@ export async function CatalogListing({ pathname, params, title, description, for
   forced?: Partial<PublicProductListQuery>;
 }) {
   const query = catalogQuery(params, forced);
-  const [result, categories, brands] = await Promise.all([getProducts(query), getCategories(), getBrands()]);
+  const [result, categories, brands, catalogBanners] = await Promise.all([getProducts(query), getCategories(), getBrands(), getBanners('CATALOG_TOP')]);
   const products = result?.data ?? [];
   const meta = result?.meta;
 
@@ -31,6 +32,17 @@ export async function CatalogListing({ pathname, params, title, description, for
       <div className="eyebrow">BCM / CATÁLOGO</div>
       <h1>{title}</h1><p>{description}</p>
     </section>
+    {!!catalogBanners.length && <section className="catalog-banner-wrap container" aria-label="Campaña de catálogo">
+      {catalogBanners.slice(0, 1).map(banner => <article className="catalog-banner" key={banner.id}>
+        <Image src={banner.imageUrl} alt="" fill unoptimized sizes="(max-width:800px) 100vw,1200px" />
+        <div className="catalog-banner-overlay" />
+        <div className="catalog-banner-copy">
+          {banner.title && <h2>{banner.title}</h2>}
+          {banner.subtitle && <p>{banner.subtitle}</p>}
+          {banner.ctaText && banner.ctaHref && <Link href={banner.ctaHref}>{banner.ctaText} →</Link>}
+        </div>
+      </article>)}
+    </section>}
     <div className="catalog-layout container">
       <aside className="catalog-filters">
         <details className="catalog-filter-panel">

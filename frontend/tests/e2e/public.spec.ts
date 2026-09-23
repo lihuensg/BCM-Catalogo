@@ -18,6 +18,8 @@ test('public storefront exposes published catalog data without leaking hidden pr
   await expect(page.getByRole('link', { name: 'Ver Instagram' })).toHaveAttribute('href', 'https://instagram.com/bcm.qa');
 
   await page.goto('/catalogo?search=' + encodeURIComponent('Producto público QA'));
+  await expect(page.getByRole('heading', { name: data.prefix + '-catalog-banner' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Ver destacados QA' })).toHaveAttribute('href', '/destacados');
   await expect(page.getByRole('link', { name: /Producto público QA/ })).toBeVisible();
   await expect(page.getByText('123.456,78', { exact: true })).toBeVisible();
 

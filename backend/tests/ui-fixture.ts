@@ -104,8 +104,8 @@ try {
       }
     });
 
-    await db.banner.create({
-      data: {
+    await db.banner.createMany({
+      data: [{
         title: prefix + '-hero',
         subtitle: 'Hero público controlado por E2E',
         imageUrl: 'http://localhost:3100/logo.jpg',
@@ -114,7 +114,16 @@ try {
         placement: 'HOME_HERO',
         active: true,
         sortOrder: 1
-      }
+      }, {
+        title: prefix + '-catalog-banner',
+        subtitle: 'Campaña superior de catálogo QA',
+        imageUrl: 'http://localhost:3100/logo.jpg',
+        ctaText: 'Ver destacados QA',
+        ctaHref: '/destacados',
+        placement: 'CATALOG_TOP',
+        active: true,
+        sortOrder: 1
+      }]
     });
 
     await db.adminUser.create({ data: { email, name: 'Administrador QA', passwordHash: await hashPassword(password), active: true } });
