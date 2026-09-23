@@ -1,5 +1,5 @@
 import '../scripts/integration-env.js';
-import { mkdirSync, writeFileSync, readFileSync, existsSync, unlinkSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync, unlinkSync } from 'node:fs';
 import { randomUUID, randomBytes } from 'node:crypto';
 import { createPrismaClient } from '../src/infrastructure/prisma/client.js';
 import { hashPassword } from '../src/modules/auth/password.js';
@@ -7,11 +7,23 @@ import { hashPassword } from '../src/modules/auth/password.js';
 const db = createPrismaClient(process.env.TEST_DATABASE_URL!, { connectionTimeoutMillis: 20000 });
 const file = '../artifacts/ui-fixture.json';
 
+function isMissingFile(error: unknown) {
+  return error instanceof Error && 'code' in error && error.code === 'ENOENT';
+}
+
 try {
   if (process.argv[2] === 'cleanup') {
-    if (existsSync(file)) {
-      const fixture = JSON.parse(readFileSync(file, 'utf8')) as { prefix: string; email: string };
+    let raw: string | null = null;
+    try {
+      raw = readFileSync(file, 'utf8');
+    } catch (error) {
+      if (!isMissingFile(error)) throw error;
+    }
+
+    if (raw !== null) {
+      const fixture = JSON.parse(raw) as { prefix: string; email: string };
       if (!/^ui-[0-9a-f-]{36}$/.test(fixture.prefix)) throw new Error('Invalid fixture scope');
+
       await db.product.deleteMany({ where: { slug: { startsWith: fixture.prefix } } });
       await db.categoryAttribute.deleteMany({ where: { category: { slug: { startsWith: fixture.prefix } } } });
       await db.attributeOption.deleteMany({ where: { attribute: { slug: { startsWith: fixture.prefix } } } });
@@ -22,23 +34,43 @@ try {
       await db.banner.deleteMany({ where: { title: { startsWith: fixture.prefix } } });
       await db.siteSettings.deleteMany({ where: { siteName: fixture.prefix } });
       await db.adminUser.deleteMany({ where: { email: fixture.email } });
-      unlinkSync(file);
+
+      try {
+        unlinkSync(file);
+      } catch (error) {
+        if (!isMissingFile(error)) throw error;
+      }
       console.log('UI fixtures cleaned');
     }
   } else {
-    if (existsSync(file)) throw new Error('Clean the previous UI fixtures first');
     if (await db.siteSettings.count()) throw new Error('UI tests require an unconfigured test singleton');
 
     const prefix = 'ui-' + randomUUID();
     const email = prefix + '@example.test';
     const password = randomBytes(24).toString('base64url');
-    mkdirSync('../artifacts', { recursive: true });
-    writeFileSync(file, JSON.stringify({ prefix, email, password }));
 
-    const category = await db.category.create({ data: { name: 'QA Categoría', slug: prefix + '-category', active: true, sortOrder: 1 } });
-    const brand = await db.brand.create({ data: { name: 'QA Marca', slug: prefix + '-brand', active: true } });
-    const attribute = await db.attributeDefinition.create({ data: { name: 'Especificación QA', slug: prefix + '-attribute', dataType: 'TEXT', active: true } });
-    await db.categoryAttribute.create({ data: { categoryId: category.id, attributeId: attribute.id, required: true } });
+    mkdirSync('../artifacts', { recursive: true });
+    try {
+      writeFileSync(file, JSON.stringify({ prefix, email, password }), { flag: 'wx' });
+    } catch (error) {
+      if (error instanceof Error && 'code' in error && error.code === 'EEXIST') {
+        throw new Error('Clean the previous UI fixtures first');
+      }
+      throw error;
+    }
+
+    const category = await db.category.create({
+      data: { name: 'QA Categoría', slug: prefix + '-category', active: true, sortOrder: 1 }
+    });
+    const brand = await db.brand.create({
+      data: { name: 'QA Marca', slug: prefix + '-brand', active: true }
+    });
+    const attribute = await db.attributeDefinition.create({
+      data: { name: 'Especificación QA', slug: prefix + '-attribute', dataType: 'TEXT', active: true }
+    });
+    await db.categoryAttribute.create({
+      data: { categoryId: category.id, attributeId: attribute.id, required: true }
+    });
 
     const visible = await db.product.create({
       data: {
@@ -58,12 +90,15 @@ try {
         newArrival: true,
         publishedAt: new Date(),
         sortOrder: 1,
-        images: { create: [
-          { url: 'http://localhost:3100/logo.jpg', altText: 'Logo BCM en producto público QA', isPrimary: true, sortOrder: 1 },
-          { url: 'http://localhost:3100/logo.jpg?gallery=2', altText: 'Segunda imagen BCM de prueba', isPrimary: false, sortOrder: 2 }
-        ] }
+        images: {
+          create: [
+            { url: 'http://localhost:3100/logo.jpg', altText: 'Logo BCM en producto público QA', isPrimary: true, sortOrder: 1 },
+            { url: 'http://localhost:3100/logo.jpg?gallery=2', altText: 'Segunda imagen BCM de prueba', isPrimary: false, sortOrder: 2 }
+          ]
+        }
       }
     });
+
     await db.productAttributeValue.create({
       data: {
         productId: visible.id,
@@ -105,32 +140,42 @@ try {
     });
 
     await db.banner.createMany({
-      data: [{
-        title: prefix + '-hero',
-        subtitle: 'Hero público controlado por E2E',
-        imageUrl: 'http://localhost:3100/logo.jpg',
-        ctaText: 'Ver catálogo QA',
-        ctaHref: '/catalogo',
-        placement: 'HOME_HERO',
-        active: true,
-        sortOrder: 1
-      }, {
-        title: prefix + '-catalog-banner',
-        subtitle: 'Campaña superior de catálogo QA',
-        imageUrl: 'http://localhost:3100/logo.jpg',
-        ctaText: 'Ver destacados QA',
-        ctaHref: '/destacados',
-        placement: 'CATALOG_TOP',
-        active: true,
-        sortOrder: 1
-      }]
+      data: [
+        {
+          title: prefix + '-hero',
+          subtitle: 'Hero público controlado por E2E',
+          imageUrl: 'http://localhost:3100/logo.jpg',
+          ctaText: 'Ver catálogo QA',
+          ctaHref: '/catalogo',
+          placement: 'HOME_HERO',
+          active: true,
+          sortOrder: 1
+        },
+        {
+          title: prefix + '-catalog-banner',
+          subtitle: 'Campaña superior de catálogo QA',
+          imageUrl: 'http://localhost:3100/logo.jpg',
+          ctaText: 'Ver destacados QA',
+          ctaHref: '/destacados',
+          placement: 'CATALOG_TOP',
+          active: true,
+          sortOrder: 1
+        }
+      ]
     });
 
-    await db.adminUser.create({ data: { email, name: 'Administrador QA', passwordHash: await hashPassword(password), active: true } });
+    await db.adminUser.create({
+      data: { email, name: 'Administrador QA', passwordHash: await hashPassword(password), active: true }
+    });
 
     writeFileSync(file, JSON.stringify({
-      prefix, email, password, categoryId: category.id, brandId: brand.id,
-      publicVisibleSlug: visible.slug, publicHiddenSlug: hidden.slug
+      prefix,
+      email,
+      password,
+      categoryId: category.id,
+      brandId: brand.id,
+      publicVisibleSlug: visible.slug,
+      publicHiddenSlug: hidden.slug
     }));
     console.log('UI test fixtures prepared');
   }
