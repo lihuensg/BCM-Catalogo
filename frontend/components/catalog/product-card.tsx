@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { PublicProductListDto } from '@bcm/shared';
 import { availabilityLabel, discountPercentage, formatAmount, publicPrice } from '@/features/catalog/model';
+import { ProductFallback } from './product-fallback';
 
 export function ProductCard({ product }: { product: PublicProductListDto }) {
   const price = publicPrice(product);
@@ -21,7 +22,7 @@ export function ProductCard({ product }: { product: PublicProductListDto }) {
       </div>
       {product.thumbnail
         ? <Image src={product.thumbnail.url} alt={product.thumbnail.altText} fill sizes="(max-width:520px) 120px,(max-width:1100px) 33vw,25vw" unoptimized />
-        : <span className="product-fallback" aria-hidden="true">{fallback}</span>}
+        : <ProductFallback label={fallback} />}
     </div>
     <div className="product-card-body">
       <span className="product-brand">{product.brand?.name ?? product.category.name}</span>

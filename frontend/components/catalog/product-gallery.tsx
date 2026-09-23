@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import type { PublicProductImageDto } from '@bcm/shared';
+import { ProductFallback } from './product-fallback';
 
 export function ProductGallery({ images, productName }: { images: PublicProductImageDto[]; productName: string }) {
   const [selected, setSelected] = useState(0);
@@ -10,7 +11,7 @@ export function ProductGallery({ images, productName }: { images: PublicProductI
 
   if (!image) {
     return <div className="product-gallery product-gallery-empty">
-      <div className="product-main-image"><span className="product-fallback">BCM</span></div>
+      <div className="product-main-image"><ProductFallback label={productName} /></div>
     </div>;
   }
 
