@@ -94,3 +94,18 @@ test('public pages pass responsive smoke QA at required viewports', async ({ pag
 
   expect(errors).toEqual([]);
 });
+
+
+test('catalog filters are desktop-visible and mobile-collapsible', async ({ page }) => {
+  await page.setViewportSize({ width: 1366, height: 900 });
+  await page.goto('/catalogo');
+  await expect(page.getByRole('heading', { name: 'Filtrar catálogo' })).toBeVisible();
+
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto('/catalogo');
+  const summary = page.getByText('Filtros y orden', { exact: true });
+  await expect(summary).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Filtrar catálogo' })).toBeHidden();
+  await summary.click();
+  await expect(page.getByRole('heading', { name: 'Filtrar catálogo' })).toBeVisible();
+});
