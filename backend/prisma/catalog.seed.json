@@ -2,7 +2,9 @@
   "site": {
     "siteName": "BCM Products",
     "defaultSeoTitle": "BCM Products | Catálogo",
-    "defaultSeoDescription": "Catálogo BCM de tecnología, accesorios, perfumes, audio, smartwatches y gadgets."
+    "defaultSeoDescription": "Catálogo BCM de tecnología, accesorios, perfumes, audio, smartwatches y gadgets.",
+    "heroTitle": "Todo lo que buscás, en un solo catálogo.",
+    "heroSubtitle": "Tecnología, audio, perfumes, accesorios y más. Explorá opciones y consultá disponibilidad."
   },
   "categories": [
     {
@@ -98,7 +100,19 @@
       "newArrival": false,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 10
+      "sortOrder": 10,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-equipo",
+          "dataType": "TEXT",
+          "textValue": "Smartphone"
+        },
+        {
+          "attributeSlug": "conectividad",
+          "dataType": "TEXT",
+          "textValue": "5G"
+        }
+      ]
     },
     {
       "name": "Samsung Galaxy S25 Ultra",
@@ -115,7 +129,19 @@
       "newArrival": false,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 20
+      "sortOrder": 20,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-equipo",
+          "dataType": "TEXT",
+          "textValue": "Smartphone"
+        },
+        {
+          "attributeSlug": "conectividad",
+          "dataType": "TEXT",
+          "textValue": "5G"
+        }
+      ]
     },
     {
       "name": "Motorola Edge 60 Pro",
@@ -132,7 +158,19 @@
       "newArrival": true,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 30
+      "sortOrder": 30,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-equipo",
+          "dataType": "TEXT",
+          "textValue": "Smartphone"
+        },
+        {
+          "attributeSlug": "conectividad",
+          "dataType": "TEXT",
+          "textValue": "5G"
+        }
+      ]
     },
     {
       "name": "Xiaomi Redmi Note 14 Pro 5G",
@@ -149,7 +187,19 @@
       "newArrival": true,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 40
+      "sortOrder": 40,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-equipo",
+          "dataType": "TEXT",
+          "textValue": "Smartphone"
+        },
+        {
+          "attributeSlug": "conectividad",
+          "dataType": "TEXT",
+          "textValue": "5G"
+        }
+      ]
     },
     {
       "name": "Samsung Galaxy A56 5G",
@@ -166,7 +216,19 @@
       "newArrival": false,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 50
+      "sortOrder": 50,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-equipo",
+          "dataType": "TEXT",
+          "textValue": "Smartphone"
+        },
+        {
+          "attributeSlug": "conectividad",
+          "dataType": "TEXT",
+          "textValue": "5G"
+        }
+      ]
     },
     {
       "name": "Motorola Razr 60 Ultra",
@@ -183,7 +245,19 @@
       "newArrival": true,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 60
+      "sortOrder": 60,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-equipo",
+          "dataType": "TEXT",
+          "textValue": "Smartphone plegable"
+        },
+        {
+          "attributeSlug": "conectividad",
+          "dataType": "TEXT",
+          "textValue": "5G"
+        }
+      ]
     },
     {
       "name": "Apple MagSafe Charger",
@@ -200,7 +274,14 @@
       "newArrival": false,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 70
+      "sortOrder": 70,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-accesorio",
+          "dataType": "TEXT",
+          "textValue": "Cargador magnético"
+        }
+      ]
     },
     {
       "name": "Samsung 45W Power Adapter",
@@ -217,7 +298,14 @@
       "newArrival": false,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 80
+      "sortOrder": 80,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-accesorio",
+          "dataType": "TEXT",
+          "textValue": "Adaptador de corriente"
+        }
+      ]
     },
     {
       "name": "Anker Nano Power Bank 10K",
@@ -234,7 +322,14 @@
       "newArrival": true,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 90
+      "sortOrder": 90,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-accesorio",
+          "dataType": "TEXT",
+          "textValue": "Batería portátil"
+        }
+      ]
     },
     {
       "name": "Logitech Pebble Mouse 2 M350s",
@@ -251,7 +346,14 @@
       "newArrival": false,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 100
+      "sortOrder": 100,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-accesorio",
+          "dataType": "TEXT",
+          "textValue": "Mouse inalámbrico"
+        }
+      ]
     },
     {
       "name": "Apple AirTag",
@@ -268,7 +370,14 @@
       "newArrival": false,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 110
+      "sortOrder": 110,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-accesorio",
+          "dataType": "TEXT",
+          "textValue": "Localizador"
+        }
+      ]
     },
     {
       "name": "Dior Sauvage Eau de Parfum",
@@ -285,7 +394,14 @@
       "newArrival": false,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 120
+      "sortOrder": 120,
+      "attributeValues": [
+        {
+          "attributeSlug": "concentracion",
+          "dataType": "OPTION",
+          "optionValue": "edp"
+        }
+      ]
     },
     {
       "name": "Carolina Herrera 212 VIP Rosé Eau de Parfum",
@@ -302,7 +418,14 @@
       "newArrival": true,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 130
+      "sortOrder": 130,
+      "attributeValues": [
+        {
+          "attributeSlug": "concentracion",
+          "dataType": "OPTION",
+          "optionValue": "edp"
+        }
+      ]
     },
     {
       "name": "Rabanne 1 Million Eau de Toilette",
@@ -319,7 +442,14 @@
       "newArrival": false,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 140
+      "sortOrder": 140,
+      "attributeValues": [
+        {
+          "attributeSlug": "concentracion",
+          "dataType": "OPTION",
+          "optionValue": "edt"
+        }
+      ]
     },
     {
       "name": "Apple AirPods Pro 2",
@@ -336,7 +466,19 @@
       "newArrival": false,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 150
+      "sortOrder": 150,
+      "attributeValues": [
+        {
+          "attributeSlug": "formato-audio",
+          "dataType": "TEXT",
+          "textValue": "In-ear"
+        },
+        {
+          "attributeSlug": "conectividad",
+          "dataType": "TEXT",
+          "textValue": "Bluetooth"
+        }
+      ]
     },
     {
       "name": "JBL Tune 770NC",
@@ -353,7 +495,19 @@
       "newArrival": false,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 160
+      "sortOrder": 160,
+      "attributeValues": [
+        {
+          "attributeSlug": "formato-audio",
+          "dataType": "TEXT",
+          "textValue": "Vincha"
+        },
+        {
+          "attributeSlug": "conectividad",
+          "dataType": "TEXT",
+          "textValue": "Bluetooth"
+        }
+      ]
     },
     {
       "name": "Apple Watch Series 10",
@@ -370,7 +524,19 @@
       "newArrival": false,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 170
+      "sortOrder": 170,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-wearable",
+          "dataType": "TEXT",
+          "textValue": "Smartwatch"
+        },
+        {
+          "attributeSlug": "conectividad",
+          "dataType": "TEXT",
+          "textValue": "Bluetooth"
+        }
+      ]
     },
     {
       "name": "Samsung Galaxy Watch7",
@@ -387,7 +553,19 @@
       "newArrival": false,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 180
+      "sortOrder": 180,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-wearable",
+          "dataType": "TEXT",
+          "textValue": "Smartwatch"
+        },
+        {
+          "attributeSlug": "conectividad",
+          "dataType": "TEXT",
+          "textValue": "Bluetooth"
+        }
+      ]
     },
     {
       "name": "Amazon Echo Dot 5th Gen",
@@ -404,7 +582,14 @@
       "newArrival": false,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 190
+      "sortOrder": 190,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-gadget",
+          "dataType": "TEXT",
+          "textValue": "Parlante inteligente"
+        }
+      ]
     },
     {
       "name": "Xiaomi Smart Band 9",
@@ -421,7 +606,139 @@
       "newArrival": true,
       "saleMode": "IN_STOCK",
       "availability": "AVAILABLE",
-      "sortOrder": 200
+      "sortOrder": 200,
+      "attributeValues": [
+        {
+          "attributeSlug": "tipo-gadget",
+          "dataType": "TEXT",
+          "textValue": "Pulsera inteligente"
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "Tipo de equipo",
+      "slug": "tipo-equipo",
+      "dataType": "TEXT",
+      "unit": null,
+      "filterable": false,
+      "options": []
+    },
+    {
+      "name": "Conectividad",
+      "slug": "conectividad",
+      "dataType": "TEXT",
+      "unit": null,
+      "filterable": true,
+      "options": []
+    },
+    {
+      "name": "Tipo de accesorio",
+      "slug": "tipo-accesorio",
+      "dataType": "TEXT",
+      "unit": null,
+      "filterable": true,
+      "options": []
+    },
+    {
+      "name": "Concentración",
+      "slug": "concentracion",
+      "dataType": "OPTION",
+      "unit": null,
+      "filterable": true,
+      "options": [
+        {
+          "label": "Eau de Parfum",
+          "value": "edp",
+          "sortOrder": 10
+        },
+        {
+          "label": "Eau de Toilette",
+          "value": "edt",
+          "sortOrder": 20
+        }
+      ]
+    },
+    {
+      "name": "Formato de audio",
+      "slug": "formato-audio",
+      "dataType": "TEXT",
+      "unit": null,
+      "filterable": true,
+      "options": []
+    },
+    {
+      "name": "Tipo de wearable",
+      "slug": "tipo-wearable",
+      "dataType": "TEXT",
+      "unit": null,
+      "filterable": true,
+      "options": []
+    },
+    {
+      "name": "Tipo de gadget",
+      "slug": "tipo-gadget",
+      "dataType": "TEXT",
+      "unit": null,
+      "filterable": true,
+      "options": []
+    }
+  ],
+  "categoryAttributes": [
+    {
+      "categorySlug": "celulares",
+      "attributeSlug": "tipo-equipo",
+      "required": true,
+      "sortOrder": 10
+    },
+    {
+      "categorySlug": "celulares",
+      "attributeSlug": "conectividad",
+      "required": false,
+      "sortOrder": 20
+    },
+    {
+      "categorySlug": "accesorios",
+      "attributeSlug": "tipo-accesorio",
+      "required": true,
+      "sortOrder": 10
+    },
+    {
+      "categorySlug": "perfumes",
+      "attributeSlug": "concentracion",
+      "required": true,
+      "sortOrder": 10
+    },
+    {
+      "categorySlug": "audio",
+      "attributeSlug": "formato-audio",
+      "required": true,
+      "sortOrder": 10
+    },
+    {
+      "categorySlug": "audio",
+      "attributeSlug": "conectividad",
+      "required": false,
+      "sortOrder": 20
+    },
+    {
+      "categorySlug": "smartwatches",
+      "attributeSlug": "tipo-wearable",
+      "required": true,
+      "sortOrder": 10
+    },
+    {
+      "categorySlug": "smartwatches",
+      "attributeSlug": "conectividad",
+      "required": false,
+      "sortOrder": 20
+    },
+    {
+      "categorySlug": "gadgets",
+      "attributeSlug": "tipo-gadget",
+      "required": true,
+      "sortOrder": 10
     }
   ]
 }
