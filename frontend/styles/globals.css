@@ -142,3 +142,7 @@ fieldset {border:0;padding:0;margin:0;min-width:0;} fieldset:disabled {opacity:.
 
 /* --- Typography and admin density polish --- */
 .hero h1,.catalog-hero h1,.product-info h1,.section-head h2,.editorial-card h2,.campaign-copy h2,.catalog-banner-copy h2{font-weight:720;text-wrap:balance}.product-name{font-weight:720}.public-nav{font-weight:650}.admin-price{white-space:normal!important;max-width:10.5rem;font-size:.76rem;line-height:1.3}.admin-availability{font-weight:600}.table-scroll tbody tr{transition:background var(--transition-fast)}.table-scroll tbody tr:hover{background:#faf7fd}
+
+
+/* --- Mobile safe-area refinement --- */
+@media(max-width:800px){.product-mobile-cta{bottom:max(1rem,env(safe-area-inset-bottom));}.public-footer-wrap{padding-bottom:0}.public-shell:has(.product-mobile-cta) .public-footer-wrap{padding-bottom:5rem}}
