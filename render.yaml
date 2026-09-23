@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: bcm-catalogo-api
+    runtime: node
+    plan: free
+    autoDeployTrigger: checksPass
+    buildCommand: npm ci && npm run build:backend
+    preDeployCommand: npm run prisma:deploy
+    startCommand: npm run start --workspace @bcm/backend
+    healthCheckPath: /api/v1/health
+    buildFilter:
+      paths:
+        - backend/**
+        - packages/shared/**
+        - package.json
+        - package-lock.json
+        - render.yaml
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+      - key: SESSION_TTL_SECONDS
+        value: "28800"
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: FRONTEND_REVALIDATE_URL
+        sync: false
+      - key: REVALIDATION_SECRET
+        sync: false
