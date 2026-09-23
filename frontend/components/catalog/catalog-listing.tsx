@@ -87,9 +87,11 @@ export async function CatalogListing({ pathname, params, title, description, for
           <span>{meta ? <><strong>{meta.total}</strong> productos</> : 'Catálogo temporalmente no disponible'}</span>
           <span>Página {meta?.page ?? 1}</span>
         </div>
-        {products.length
-          ? <div className="product-grid">{products.map(product => <ProductCard key={product.id} product={product} />)}</div>
-          : <div className="catalog-empty"><h2>No encontramos productos</h2><p>Probá limpiando los filtros o consultanos para ayudarte.</p><Link className="button" href="/catalogo">Ver todo el catálogo</Link></div>}
+        {result === null
+          ? <div className="catalog-empty" role="status"><h2>Catálogo temporalmente no disponible</h2><p>No pudimos actualizar esta vista. Si había contenido cacheado seguirá disponible; también podés volver a intentar en unos instantes.</p><Link className="button" href={pathname}>Volver a intentar</Link></div>
+          : products.length
+            ? <div className="product-grid">{products.map(product => <ProductCard key={product.id} product={product} />)}</div>
+            : <div className="catalog-empty"><h2>No encontramos productos</h2><p>Probá limpiando los filtros o consultanos para ayudarte.</p><Link className="button" href="/catalogo">Ver todo el catálogo</Link></div>}
         {meta && meta.totalPages > 1 && <nav className="store-pagination" aria-label="Paginación del catálogo">
           {meta.page > 1 && <Link aria-label="Página anterior" href={pageHref(pathname, params, meta.page - 1)}>←</Link>}
           <span className="current" aria-current="page">{meta.page}</span>
