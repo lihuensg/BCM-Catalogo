@@ -5,6 +5,7 @@ import { ProductSection } from '@/components/catalog/product-section';
 import { ProductGallery } from '@/components/catalog/product-gallery';
 import { availabilityLabel, formatAmount, whatsappUrl } from '@/features/catalog/model';
 import { getProduct, getSettings, PublicNotFoundError } from '@/services/public/client';
+import { productJsonLd, safeJsonLd } from '@/features/catalog/seo';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   try {
@@ -13,9 +14,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return {
       title: product.seoTitle ?? product.name,
       description: product.seoDescription ?? product.shortDescription,
+      alternates: { canonical: '/producto/' + product.slug },
       openGraph: {
         title: product.seoTitle ?? product.name,
         description: product.seoDescription ?? product.shortDescription,
+        type: 'website',
+        url: '/producto/' + product.slug,
         images: product.images[0]?.url ? [product.images[0].url] : []
       }
     };
@@ -37,9 +41,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   const { product, related } = payload;
   const price = product.showPrice && product.price ? formatAmount(product.price) : null;
-  const whatsapp = whatsappUrl(settings, product, process.env.NEXT_PUBLIC_SITE_URL ?? '');
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? '';
+  const whatsapp = whatsappUrl(settings, product, siteUrl);
+  const structuredData = productJsonLd(product, siteUrl);
 
   return <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(structuredData) }} />
     <article className="product-detail container">
       <nav className="product-breadcrumb" aria-label="Ruta del producto">
         <Link href="/">Inicio</Link><span>/</span>
