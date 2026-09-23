@@ -12,6 +12,8 @@ import { bannerSchema } from '../src/modules/banners/schema.js';
 import { siteSettingsSchema, whatsappTemplateSchema } from '../src/modules/settings/schema.js';
 import { adminUserSchema } from '../src/modules/auth/schema.js';
 import { structuralSeedSchema } from '../src/infrastructure/prisma/seed-schema.js';
+import { catalogSeedSchema } from '../src/infrastructure/prisma/catalog-seed-schema.js';
+import { readFile } from 'node:fs/promises';
 import { publicBannersQuery, publicProductsQuery } from '../src/modules/catalog/schema.js';
 import { publicProductDto } from '../src/modules/catalog/mapper.js';
 import type { PublicProductRow } from '../src/modules/catalog/repository.js';
@@ -199,4 +201,20 @@ test('public banner query accepts only known placements', () => {
   assert.equal(publicBannersQuery.parse({ placement: 'CATALOG_TOP' }).placement, 'CATALOG_TOP');
   assert.equal(publicBannersQuery.safeParse({ placement: 'PRIVATE' }).success, false);
   assert.equal(publicBannersQuery.safeParse({ placement: 'CATALOG_TOP', extra: 'x' }).success, false);
+});
+
+
+test('committed demo catalog seed is valid, diverse and contains exactly 20 products', async () => {
+  const raw = JSON.parse(await readFile(new URL('../prisma/catalog.seed.json', import.meta.url), 'utf8')) as unknown;
+  const seed = catalogSeedSchema.parse(raw);
+  assert.equal(seed.products.length, 20);
+  assert.ok(seed.categories.length >= 6);
+  assert.ok(seed.brands.length >= 8);
+  assert.ok(seed.attributes.length >= 6);
+  assert.equal(new Set(seed.products.map(product => product.slug)).size, seed.products.length);
+  assert.ok(seed.products.some(product => product.showPrice === false));
+  assert.ok(seed.products.some(product => product.onSale));
+  assert.ok(seed.products.some(product => product.featured));
+  assert.ok(seed.products.some(product => product.newArrival));
+  assert.ok(seed.products.every(product => product.attributeValues.length >= 1));
 });
