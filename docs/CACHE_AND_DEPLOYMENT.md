@@ -32,3 +32,16 @@ Frontend:
 - `NEXT_PUBLIC_SITE_URL` para URLs canónicas/WhatsApp.
 
 URL y secreto de revalidación son opcionales en local, pero deben configurarse juntos en producción.
+
+
+## Pre-render de rutas públicas
+Para reducir la dependencia del backend durante navegación pública:
+- productos publicados se enumeran en build mediante `generateStaticParams`;
+- categorías con productos se pre-generan;
+- marcas con productos se pre-generan;
+- home y lecturas compartidas usan fetch cacheado por tags;
+- rutas nuevas creadas después del build siguen permitidas porque los parámetros dinámicos continúan habilitados.
+
+El helper `getAllPublicProducts` recorre páginas públicas de 60 elementos y limita el precálculo a 100 páginas para evitar builds descontrolados.
+
+Esto refuerza el objetivo de que las páginas ya publicadas no necesiten despertar Render para cada visita. La primera visita a contenido nuevo posterior al último build puede requerir resolución dinámica, pero luego queda cubierta por cache/revalidación.

@@ -18,7 +18,7 @@ operativa sin hacer deploy ni tocar una base productiva.
 | 04 | Cerrada | Panel admin visual y journeys principales |
 | 05 | Implementada | API pública, home, catálogo, búsqueda, categorías, marcas, detalle |
 | 06 | En pulido | Branding BCM, responsive, campañas, contacto y galería |
-| 07 | Implementada | Cache tags, stale/revalidation y hook post-commit |
+| 07 | Implementada | Cache tags, stale/revalidation, pre-render de rutas publicadas y hook post-commit |
 | 08 | En validación | CI, seguridad frontend, E2E público, SEO, responsive |
 | 09 | Pendiente | Deploy y smoke tests productivos |
 
