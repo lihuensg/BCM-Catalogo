@@ -58,15 +58,16 @@ try {
         newArrival: true,
         publishedAt: new Date(),
         sortOrder: 1,
-        images: { create: { url: 'http://localhost:3100/logo.jpg', altText: 'Logo BCM en producto público QA', isPrimary: true } },
-        attributeValues: {
-          create: {
-            categoryId: category.id,
-            attributeId: attribute.id,
-            dataType: 'TEXT',
-            textValue: 'Valor público QA'
-          }
-        }
+        images: { create: { url: 'http://localhost:3100/logo.jpg', altText: 'Logo BCM en producto público QA', isPrimary: true } }
+      }
+    });
+    await db.productAttributeValue.create({
+      data: {
+        productId: visible.id,
+        categoryId: category.id,
+        attributeId: attribute.id,
+        dataType: 'TEXT',
+        textValue: 'Valor público QA'
       }
     });
 
