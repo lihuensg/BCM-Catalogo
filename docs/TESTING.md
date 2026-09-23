@@ -99,3 +99,30 @@ npm run test:e2e usa Playwright y API/Neon reales con fixtures propios: login,
 protección, producto, maestros, settings y QA de 360/430/768/1366/1920 px.
 No ejecutarlo junto con test:integration. Ver ADMIN_UI_IMPLEMENTATION.md para
 puertos, limpieza limitada a fixtures, capturas y recuperación tras interrupción.
+
+
+## Storefront público y CI
+
+La suite Playwright incluye `frontend/tests/e2e/public.spec.ts` para:
+- home pública;
+- catálogo y páginas especiales;
+- filtros;
+- detalle y galería interactiva;
+- atributos dinámicos;
+- WhatsApp;
+- precio oculto sin filtración;
+- empty state;
+- smoke responsive en 360/430/768/1366/1920 px.
+
+GitHub Actions siempre ejecuta el job `quality`.
+El job `e2e` queda preparado y se activa automáticamente cuando el repositorio
+tiene configurado el secret `TEST_DATABASE_URL`. Sin ese secret no falla el CI:
+deja una anotación explícita y omite únicamente el browser suite que requiere DB.
+
+Cuando el secret existe, CI:
+1. instala Chromium;
+2. aplica las migraciones sobre la base exclusiva de test;
+3. ejecuta Playwright;
+4. conserva los artefactos UI durante 7 días.
+
+No configurar una base de desarrollo o producción como `TEST_DATABASE_URL`.
