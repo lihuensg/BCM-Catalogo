@@ -68,3 +68,10 @@ inactivos. DTOs explícitos nunca incluyen passwordHash. No hay registro públic
 
 Ver [AUTH_AND_ADMIN_API.md](AUTH_AND_ADMIN_API.md) para límites de rate limit,
 configuración de same-site/proxy, seed operativo y pendientes de despliegue.
+
+
+## Seguridad continua del repositorio
+- CodeQL analiza JavaScript/TypeScript en pull requests a `main`, pushes a `main` y semanalmente.
+- Dependabot revisa mensualmente dependencias npm y GitHub Actions.
+- Los hallazgos automáticos no deben resolverse con overrides forzados si rompen compatibilidad del toolchain; primero se evalúa impacto y versión soportada.
+- Ninguna alerta automática habilita a modificar schema, auth o dependencias críticas sin ejecutar nuevamente todos los gates de calidad.
