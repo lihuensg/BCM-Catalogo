@@ -28,34 +28,43 @@ jobs:
       - run: npm run prisma:validate
       - run: npm run prisma:generate
 
-  e2e:
+  database-and-browser:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: bcm_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d bcm_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     env:
-      TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+      TEST_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/bcm_test
+      TEST_DATABASE_ONLY: 'true'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: npm
-      - name: E2E database not configured
-        if: ${{ env.TEST_DATABASE_URL == '' }}
-        run: echo "TEST_DATABASE_URL secret is not configured; integration UI suite is skipped."
-      - name: Install dependencies
-        if: ${{ env.TEST_DATABASE_URL != '' }}
-        run: npm ci
-      - name: Install Chromium
-        if: ${{ env.TEST_DATABASE_URL != '' }}
-        run: npx playwright install --with-deps chromium
+      - run: npm ci
       - name: Apply test migrations
-        if: ${{ env.TEST_DATABASE_URL != '' }}
         run: npm run prisma:test:migrate
+      - name: Run PostgreSQL integration suite
+        run: npm run test:integration
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
       - name: Run browser E2E
-        if: ${{ env.TEST_DATABASE_URL != '' }}
         run: npm run test:e2e
       - name: Upload UI QA artifacts
-        if: ${{ always() && env.TEST_DATABASE_URL != '' }}
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: bcm-ui-qa

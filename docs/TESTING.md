@@ -105,7 +105,7 @@ puertos, limpieza limitada a fixtures, capturas y recuperación tras interrupci�
 
 La suite Playwright incluye `frontend/tests/e2e/public.spec.ts` para:
 - home pública;
-- catálogo y páginas especiales;
+- catálogo y campañas;
 - filtros;
 - detalle y galería interactiva;
 - atributos dinámicos;
@@ -114,15 +114,23 @@ La suite Playwright incluye `frontend/tests/e2e/public.spec.ts` para:
 - empty state;
 - smoke responsive en 360/430/768/1366/1920 px.
 
-GitHub Actions siempre ejecuta el job `quality`.
-El job `e2e` queda preparado y se activa automáticamente cuando el repositorio
-tiene configurado el secret `TEST_DATABASE_URL`. Sin ese secret no falla el CI:
-deja una anotación explícita y omite únicamente el browser suite que requiere DB.
+GitHub Actions ejecuta dos gates independientes:
 
-Cuando el secret existe, CI:
-1. instala Chromium;
-2. aplica las migraciones sobre la base exclusiva de test;
-3. ejecuta Playwright;
-4. conserva los artefactos UI durante 7 días.
+### quality
+- lint;
+- typecheck;
+- unit tests backend/frontend;
+- build;
+- Prisma validate/generate.
 
-No configurar una base de desarrollo o producción como `TEST_DATABASE_URL`.
+### database-and-browser
+Levanta un PostgreSQL 16 efímero y aislado dentro del runner. No usa Neon ni
+secretos persistentes. Luego:
+1. aplica las migraciones versionadas;
+2. ejecuta toda la suite de integración;
+3. instala Chromium;
+4. ejecuta Playwright;
+5. conserva screenshots/artefactos por 7 días.
+
+La base CI vive únicamente durante el job y usa TEST_DATABASE_ONLY=true. Producción
+y desarrollo nunca participan de este pipeline.

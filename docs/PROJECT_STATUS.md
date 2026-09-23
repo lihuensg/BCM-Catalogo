@@ -54,8 +54,8 @@ GitHub Actions valida:
 - build;
 - Prisma validate/generate.
 
-El browser E2E se activa con un secret `TEST_DATABASE_URL` dedicado. Sin ese
-secret queda omitido de manera explícita.
+El CI levanta un PostgreSQL 16 efímero para integración y Playwright. No depende
+de una Neon ni de secretos de base persistentes para validar el release.
 
 ## Seguridad relevante
 - sesión admin HttpOnly y revocable;
@@ -70,8 +70,8 @@ secret queda omitido de manera explícita.
 - endpoint de revalidación autenticado.
 
 ## Pendientes antes de considerar producción cerrada
-1. ejecutar E2E completo con una Neon dedicada de test desde CI o local;
-2. revisar screenshots reales del storefront y corregir cualquier detalle visual;
+1. revisar los artefactos visuales producidos por Playwright y corregir cualquier detalle;
+2. ejecutar una pasada adicional local contra Neon de test antes de producción si se desea validar compatibilidad del proveedor;
 3. cargar/validar imágenes comerciales definitivas o un storage/CDN;
 4. definir dominio público;
 5. configurar variables finales Vercel/Render/Neon;
