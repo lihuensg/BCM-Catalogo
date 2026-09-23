@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import type { PublicProductDetailDto } from '@bcm/shared';
 import { productJsonLd, safeJsonLd } from '../features/catalog/seo';
+import { discountPercentage } from '../features/catalog/model';
 
 const product = {
   id: 'product-1',
@@ -42,4 +43,12 @@ test('JSON-LD serialization neutralizes HTML-breaking characters', () => {
   const serialized = safeJsonLd({ name: '</script><script>alert(1)</script>' });
   assert.equal(serialized.includes('</script>'), false);
   assert.match(serialized, /\\u003c/);
+});
+
+
+test('discount badge is derived only from valid public offer prices', () => {
+  assert.equal(discountPercentage({ onSale: true, showPrice: true, price: '80.00', compareAtPrice: '100.00' }), 20);
+  assert.equal(discountPercentage({ onSale: false, showPrice: true, price: '80.00', compareAtPrice: '100.00' }), null);
+  assert.equal(discountPercentage({ onSale: true, showPrice: false, price: '80.00', compareAtPrice: '100.00' }), null);
+  assert.equal(discountPercentage({ onSale: true, showPrice: true, price: '100.00', compareAtPrice: '80.00' }), null);
 });
