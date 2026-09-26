@@ -1,11 +1,11 @@
 # PROJECT_STATUS.md
 
 ## Estado actual
-Rama de trabajo: `feature/complete-bcm-catalog`.
+Rama de trabajo: `main`.
 
-La arquitectura base, persistencia, seguridad administrativa y dominio de producto
-están estabilizados. El trabajo actual completa storefront, caché, QA y preparación
-operativa sin hacer deploy ni tocar una base productiva.
+La arquitectura usa dos aplicaciones Next.js independientes: `apps/public` y
+`apps/admin`, un único backend Express y PostgreSQL. La separación no cambia reglas
+de negocio ni contratos HTTP y todavía no implica deploy.
 
 ## Etapas
 
@@ -19,7 +19,8 @@ operativa sin hacer deploy ni tocar una base productiva.
 | 05 | Implementada | API pública, home, catálogo, búsqueda, categorías, marcas, detalle |
 | 06 | En pulido | Branding BCM, responsive, campañas, contacto y galería |
 | 07 | Implementada | Cache tags, stale/revalidation, pre-render de rutas publicadas y hook post-commit |
-| 08 | En validación | CI, seguridad frontend, E2E público, SEO, responsive |
+| 08 | Implementada | CI, seguridad frontend, E2E público, SEO, responsive |
+| 08.1 | Cerrada | Separación física de frontend público y admin |
 | 09 | Pendiente | Deploy y smoke tests productivos |
 
 ## Storefront implementado

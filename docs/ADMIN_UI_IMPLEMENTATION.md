@@ -126,7 +126,7 @@ npm run prisma:validate
 npm run prisma:generate
 ~~~
 
-Preparación del navegador: npm exec --workspace @bcm/frontend -- playwright install chromium.
+Preparación del navegador: npm exec --workspace @bcm/admin -- playwright install chromium.
 E2E levanta frontend en localhost:3100 y API en 127.0.0.1:4200, con TEST_DATABASE_URL
 y guardia de separación existentes. Global setup crea fixtures con prefijo UUID;
 teardown elimina solo esos registros. Credenciales temporales únicamente en

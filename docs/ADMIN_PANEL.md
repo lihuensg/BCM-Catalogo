@@ -3,7 +3,8 @@
 ## Acceso
 Un único rol: ADMIN.
 
-Rutas bajo `/admin`.
+Aplicación independiente en `apps/admin`. Sus rutas web parten de `/` y `/login`;
+el prefijo `/admin` se conserva exclusivamente en los endpoints del backend.
 No indexables.
 
 ## Login
@@ -148,3 +149,9 @@ storage. Reglas, contratos, límites y errores: [PRODUCT_DOMAIN.md](PRODUCT_DOMA
 
 Implementación, rutas, componentes, decisiones y procedimiento de validación en
 [ADMIN_UI_IMPLEMENTATION.md](ADMIN_UI_IMPLEMENTATION.md).
+
+## Separación de aplicación
+
+Rutas vigentes del frontend admin: `/`, `/login`, `/productos`,
+`/productos/nuevo`, `/productos/[id]/editar`, `/categorias`, `/marcas`,
+`/atributos`, `/banners` y `/configuracion`. Todo el sitio declara `noindex`.

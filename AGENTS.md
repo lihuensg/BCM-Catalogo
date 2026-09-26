@@ -89,7 +89,7 @@ Antes de tocar código:
 10. Si queda deuda técnica, declararla; no ocultarla.
 
 ## Fuente visual
-`logo.jpg` en la raíz del repositorio es el asset de identidad principal. El frontend usa su copia en `frontend/public/logo.jpg` para servirlo de forma estable.
+`logo.jpg` en la raíz del repositorio es el asset de identidad principal. Cada aplicación usa su copia en `apps/public/public/logo.jpg` o `apps/admin/public/logo.jpg` para servirlo de forma estable.
 Paleta provisional:
 - `#0D1641`
 - `#5D195A`

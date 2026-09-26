@@ -122,5 +122,5 @@ export async function seedCatalog(client: PrismaClient, input: unknown) {
             products: data.products.length,
             productsCreated: created
         };
-    });
+    }, { timeout: 120_000 });
 }

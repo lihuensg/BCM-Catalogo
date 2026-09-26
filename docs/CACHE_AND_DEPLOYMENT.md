@@ -11,7 +11,7 @@ El storefront usa Server Components y el Data Cache de Next.js. Las lecturas pú
 - `public-product-<slug>`
 
 ## Invalidación
-Las mutaciones administrativas se confirman primero en PostgreSQL. Después del commit el backend notifica de forma best-effort a `FRONTEND_REVALIDATE_URL`; un fallo de red nunca revierte la mutación ya guardada.
+Las mutaciones administrativas se confirman primero en PostgreSQL. Después del commit el backend notifica de forma best-effort a `PUBLIC_REVALIDATE_URL`; un fallo de red nunca revierte la mutación ya guardada. Sólo la aplicación pública recibe esta invalidación.
 
 Productos invalidan catálogo, home y slug actual/anterior. Categorías, marcas, atributos, banners y settings invalidan únicamente las familias públicas relacionadas.
 
@@ -24,12 +24,14 @@ El endpoint frontend `POST /api/revalidate`:
 
 ## Variables
 Backend:
-- `FRONTEND_REVALIDATE_URL`
+- `PUBLIC_REVALIDATE_URL`
 - `REVALIDATION_SECRET`
 
-Frontend:
+Frontend público:
 - `REVALIDATION_SECRET`
 - `NEXT_PUBLIC_SITE_URL` para URLs canónicas/WhatsApp.
+
+El admin no configura `REVALIDATION_SECRET` ni expone un endpoint de revalidación.
 
 URL y secreto de revalidación son opcionales en local, pero deben configurarse juntos en producción.
 

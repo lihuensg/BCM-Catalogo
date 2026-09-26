@@ -28,7 +28,7 @@ services:
         sync: false
       - key: CORS_ORIGINS
         sync: false
-      - key: FRONTEND_REVALIDATE_URL
+      - key: PUBLIC_REVALIDATE_URL
         sync: false
       - key: REVALIDATION_SECRET
         sync: false

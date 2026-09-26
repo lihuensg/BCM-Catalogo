@@ -1,4 +1,4 @@
-# DESIGN_SYSTEM.md
+﻿# DESIGN_SYSTEM.md
 
 ## Fuente de verdad
 1. `BCM/logo.jpg`
@@ -139,12 +139,28 @@ La fuente sigue siendo el logo, no una supuesta extracción exacta de colores de
 El wrapper `BrandLogo` conserva el lienzo completo, sin recorte ni deformación,
 y acompaña el asset con nombre legible debido a su bajo contraste nativo en el fondo oscuro.
 Separación mínima exterior de 12 px; no colocar textos encima del logo.
-La copia en `frontend/public/logo.jpg` conserva exactamente los bytes del original.
+La copia en `apps/public/public/logo.jpg` conserva exactamente los bytes del original.
 No hay versión clara vectorial autorizada: obtenerla antes de optimizar el lockup definitivo.
-Tokens semánticos, radios, tipografía, sombras, focus y reduced-motion están en
-`frontend/styles/globals.css`. Naranja se reserva para acentos, no texto sobre blanco.
+Cada aplicación conserva sus tokens semánticos mínimos en su propio
+`styles/globals.css`. El archivo público contiene únicamente estilos del catálogo
+y el administrativo únicamente patrones de gestión. Naranja se reserva para
+acentos, no texto sobre blanco.
 
 ## Componentes administrativos — Etapa 04
 
 Implementación, rutas, componentes, decisiones y procedimiento de validación en
 [ADMIN_UI_IMPLEMENTATION.md](ADMIN_UI_IMPLEMENTATION.md).
+
+## Identidad vigente (2026)
+
+Esta secciÃ³n reemplaza la descripciÃ³n histÃ³rica del asset de etapa 00. El
+`logo.jpg` vigente es un lienzo cuadrado de 640 por 640 px, con fondo blanco
+texturado y lockup horizontal completo: isotipo, “BCM” y “PRODUCTS”. Conserva
+el violeta profundo y el degradado fucsia, rojo y naranja como rasgos centrales.
+
+`BrandLogo` no agrega texto junto al archivo porque la denominaciÃ³n ya forma
+parte del lockup. En superficies compactas puede ocultar solamente el espacio
+exterior del lienzo para darle escala legible, sin cortar, recolorear ni deformar
+el isotipo o el nombre. Mantener al menos 12 px de separaciÃ³n exterior y no
+superponer contenido. `apps/public/public/logo.jpg` y `apps/public/app/icon.jpg`
+conservan los mismos bytes que el original vigente.

@@ -12,3 +12,12 @@ artifacts/
 
 .npm-cache/
 !.env.test.example
+screenshots/
+test-results/
+playwright-report/
+.cache/
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db

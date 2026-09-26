@@ -4,7 +4,7 @@ import { disconnectPrisma } from './infrastructure/prisma/client.js';
 import { parseEnvironment } from './config/env.js';
 import { createFrontendInvalidation, productInvalidationHook } from './shared/public-cache.js';
 const env = parseEnvironment(process.env);
-const invalidate = createFrontendInvalidation(env.FRONTEND_REVALIDATE_URL, env.REVALIDATION_SECRET);
+const invalidate = createFrontendInvalidation(env.PUBLIC_REVALIDATE_URL, env.REVALIDATION_SECRET);
 const app = createApp({
     corsOrigins: env.CORS_ORIGINS,
     production: env.NODE_ENV === 'production',

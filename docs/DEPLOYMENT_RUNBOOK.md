@@ -4,7 +4,7 @@
 Preparar producción sin guardar secretos en el repositorio.
 
 Topología prevista:
-- frontend Next.js: Vercel;
+- frontends Next.js independientes: Netlify;
 - backend Express: Render;
 - PostgreSQL: Neon;
 - código y CI: GitHub.
@@ -43,32 +43,34 @@ Health: /api/v1/health
 Variables no versionadas:
 - DATABASE_URL
 - CORS_ORIGINS
-- FRONTEND_REVALIDATE_URL
+- PUBLIC_REVALIDATE_URL
 - REVALIDATION_SECRET
 
-CORS_ORIGINS debe contener el origen exacto del frontend final, sin slash final.
+CORS_ORIGINS debe contener orígenes exactos, sin slash final:
+`https://catalogo.bcm.com.ar,https://gestion.bcm.com.ar`.
 
-## 3. Frontend en Vercel
-Importar el repositorio como proyecto Next.js y mantener acceso al workspace compartido durante instalación/build.
+## 3. Frontends en Netlify
 
-Configuración objetivo:
-- Framework: Next.js;
-- aplicación: frontend;
-- Node.js: 24.x;
-- instalación desde el workspace;
-- build equivalente a npm run build:frontend desde el root o al workspace frontend precedido por build:shared.
+Crear dos sitios desde el mismo repositorio, con base del repositorio y detección
+Next.js de Netlify:
 
-Variables:
-- API_BASE_URL=https://<backend>/api/v1
-- NEXT_PUBLIC_SITE_URL=https://<frontend>
-- REVALIDATION_SECRET=<mismo secreto que Render>
+| Sitio | Package directory | Build desde raíz | Runtime/publish |
+| --- | --- | --- | --- |
+| BCM Public | `apps/public` | `npm run build:public` | Next.js detectado; `.next` de `apps/public` |
+| BCM Admin | `apps/admin` | `npm run build:admin` | Next.js detectado; `.next` de `apps/admin` |
 
-No exponer DATABASE_URL en Vercel.
+Public: `API_BASE_URL=https://api.bcm.com.ar/api/v1`,
+`NEXT_PUBLIC_SITE_URL=https://catalogo.bcm.com.ar` y `REVALIDATION_SECRET`.
+
+Admin: `API_BASE_URL=https://api.bcm.com.ar/api/v1` y
+`NEXT_PUBLIC_SITE_URL=https://gestion.bcm.com.ar`. No necesita secreto de revalidación.
+
+Ningún frontend recibe `DATABASE_URL`, credenciales del administrador ni secretos de sesión.
 
 ## 4. Revalidación
-Render: FRONTEND_REVALIDATE_URL=https://<frontend>/api/revalidate
+Render: `PUBLIC_REVALIDATE_URL=https://catalogo.bcm.com.ar/api/revalidate`.
 
-Render y Vercel deben compartir un REVALIDATION_SECRET aleatorio de al menos 32 caracteres.
+Render y el sitio público de Netlify deben compartir un REVALIDATION_SECRET aleatorio de al menos 32 caracteres.
 
 Una mutación admin se confirma primero en PostgreSQL. La invalidación de cache es posterior y best-effort.
 
@@ -77,7 +79,7 @@ Una mutación admin se confirma primero en PostgreSQL. La invalidación de cache
 2. crear Neon productiva;
 3. crear backend Render;
 4. verificar health;
-5. crear frontend Vercel;
+5. crear los sitios público y admin en Netlify;
 6. configurar CORS;
 7. configurar revalidación;
 8. crear admin operativo;
@@ -115,7 +117,7 @@ Infra:
 
 ## 7. Rollback
 Si una release falla:
-- volver frontend/backend al último commit válido;
+- volver cada aplicación afectada y el backend al último commit válido;
 - no ejecutar rollback destructivo de DB;
 - mantener migraciones forward-compatible;
 - crear migración compensatoria solo después de diagnosticar.

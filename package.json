@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "workspaces": [
-    "frontend",
+    "apps/public",
+    "apps/admin",
     "backend",
     "packages/shared"
   ],
@@ -12,13 +13,15 @@
     "npm": ">=11 <12"
   },
   "scripts": {
-    "dev:frontend": "npm run dev --workspace @bcm/frontend",
+    "dev:public": "npm run dev --workspace @bcm/public",
+    "dev:admin": "npm run dev --workspace @bcm/admin",
     "dev:backend": "npm run dev --workspace @bcm/backend",
     "build:shared": "npm run build --workspace @bcm/shared",
-    "build:frontend": "npm run build:shared && npm run build --workspace @bcm/frontend",
+    "build:public": "npm run build:shared && npm run build --workspace @bcm/public",
+    "build:admin": "npm run build:shared && npm run build --workspace @bcm/admin",
     "build:backend": "npm run build:shared && npm run build --workspace @bcm/backend",
-    "build": "npm run build:shared && npm run build --workspace @bcm/backend && npm run build --workspace @bcm/frontend",
-    "lint": "eslint . --max-warnings 0",
+    "build": "npm run build:shared && npm run build --workspace @bcm/backend && npm run build --workspace @bcm/public && npm run build --workspace @bcm/admin",
+    "lint": "eslint apps backend packages *.mjs --max-warnings 0",
     "typecheck": "npm run build:shared && npm run typecheck --workspaces",
     "test": "npm run build:shared && npm run test --workspace @bcm/backend",
     "prisma:validate": "npm run prisma:validate --workspace @bcm/backend",
@@ -30,8 +33,10 @@
     "prisma:seed": "npm run prisma:seed --workspace @bcm/backend",
     "test:integration": "npm run test:integration --workspace @bcm/backend",
     "prisma:test:migrate": "npm run prisma:test:migrate --workspace @bcm/backend",
-    "test:frontend": "npm run test --workspace @bcm/frontend",
-    "test:e2e": "npm run test:e2e --workspace @bcm/frontend"
+    "test:public": "npm run test --workspace @bcm/public",
+    "test:admin": "npm run test --workspace @bcm/admin",
+    "test:frontend": "npm run test:public && npm run test:admin",
+    "test:e2e": "npm run test:e2e --workspace @bcm/public && npm run test:e2e --workspace @bcm/admin"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

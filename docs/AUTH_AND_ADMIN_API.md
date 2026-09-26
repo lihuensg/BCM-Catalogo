@@ -42,7 +42,8 @@ Esto protege login y logout también contra CSRF. Enviar JSON y usar credentials
 include. CORS permite credenciales solo para orígenes explícitos, nunca comodín.
 No guardar tokens en localStorage. GET no muta datos.
 
-SameSite=Lax requiere frontend/API del mismo sitio para peticiones autenticadas
+SameSite=Lax protege la cookie que el BFF de `apps/admin` mantiene en el mismo
+origen del panel; el navegador no envía credenciales directamente al backend
 entre orígenes. Para el futuro despliegue usar dominios propios del mismo sitio o
 un proxy del mismo origen; los dominios genéricos de Vercel y Render entre sí no
 satisfacen esta condición. No debilitar cookies para resolverlo sin revisar CSRF.
@@ -203,7 +204,7 @@ Referencias: [node-argon2](https://github.com/ranisalt/node-argon2),
 | Comprobación | Resultado |
 | --- | --- |
 | npm run lint | OK, cero errores/warnings de código |
-| npm run typecheck | OK, frontend/backend/shared |
+| npm run typecheck | OK, public/admin/backend/shared |
 | npm test | 45/45 |
 | Integración PostgreSQL real | 21/21: 11 auth/admin + 10 modelo |
 | npm run build | OK, backend y frontend; páginas iniciales estáticas |

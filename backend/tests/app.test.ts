@@ -47,10 +47,10 @@ test('environment rejects invalid ports and CORS origins without exposing values
   assert.equal(parseEnvironment({ TRUST_PROXY_HOPS: '1' }).TRUST_PROXY_HOPS, 1);
   assert.throws(() => parseEnvironment({ TRUST_PROXY_HOPS: '3' }), /TRUST_PROXY_HOPS/);
   assert.equal(createApp({ corsOrigins: [], trustProxyHops: 1 }).get('trust proxy'), 1);
-  assert.throws(() => parseEnvironment({ FRONTEND_REVALIDATE_URL: 'https://frontend.example/api/revalidate' }), /REVALIDATION_SECRET/);
+  assert.throws(() => parseEnvironment({ PUBLIC_REVALIDATE_URL: 'https://catalogo.example/api/revalidate' }), /REVALIDATION_SECRET/);
   assert.throws(() => parseEnvironment({ REVALIDATION_SECRET: 'x'.repeat(32) }), /REVALIDATION_SECRET/);
-  const revalidation = parseEnvironment({ FRONTEND_REVALIDATE_URL: 'https://frontend.example/api/revalidate', REVALIDATION_SECRET: 'x'.repeat(32) });
-  assert.equal(revalidation.FRONTEND_REVALIDATE_URL, 'https://frontend.example/api/revalidate');
+  const revalidation = parseEnvironment({ PUBLIC_REVALIDATE_URL: 'https://catalogo.example/api/revalidate', REVALIDATION_SECRET: 'x'.repeat(32) });
+  assert.equal(revalidation.PUBLIC_REVALIDATE_URL, 'https://catalogo.example/api/revalidate');
 });
 
 

@@ -36,7 +36,8 @@ Implementado:
 
 ## Estructura
 ```text
-frontend/             Next.js público + admin
+apps/public/          Next.js del catálogo público
+apps/admin/           Next.js del panel de gestión
 backend/              Express + Prisma + PostgreSQL
 packages/shared/      DTOs y contratos compartidos
 docs/                 arquitectura, negocio, QA y operación
@@ -61,7 +62,8 @@ Crear archivos locales desde los ejemplos y nunca versionar secretos.
 ```powershell
 Copy-Item backend/.env.example backend/.env
 Copy-Item backend/.env.test.example backend/.env.test
-Copy-Item frontend/.env.example frontend/.env.local
+Copy-Item apps/public/.env.example apps/public/.env.local
+Copy-Item apps/admin/.env.example apps/admin/.env.local
 ```
 
 ## Desarrollo
@@ -70,14 +72,20 @@ Backend:
 npm run dev:backend
 ```
 
-Frontend:
+Frontend público:
 ```sh
-npm run dev:frontend
+npm run dev:public
+```
+
+Panel administrador:
+```sh
+npm run dev:admin
 ```
 
 URLs:
 - público: http://localhost:3000
-- admin: http://localhost:3000/admin
+- admin: http://localhost:3001
+- login admin: http://localhost:3001/login
 - health: http://127.0.0.1:4100/api/v1/health
 
 ## Base de datos
@@ -113,6 +121,9 @@ npm run lint
 npm run typecheck
 npm test
 npm run test:frontend
+npm run build:public
+npm run build:admin
+npm run build:backend
 npm run build
 npm run prisma:validate
 npm run prisma:generate
@@ -126,7 +137,7 @@ npm run test:integration
 
 Browser QA:
 ```sh
-npm exec --workspace @bcm/frontend -- playwright install chromium
+npm exec --workspace @bcm/public -- playwright install chromium
 npm run test:e2e
 ```
 
@@ -134,8 +145,9 @@ Los tests con DB crean fixtures propios y no deben apuntar jamás a producción.
 
 ## Producción
 Arquitectura prevista:
-- frontend: Vercel;
-- backend: Render;
+- catálogo público: Netlify, `catalogo.bcm.com.ar`;
+- panel admin: Netlify, `gestion.bcm.com.ar`;
+- backend único: Render, `api.bcm.com.ar`;
 - DB: Neon.
 
 Leer docs/DEPLOYMENT_RUNBOOK.md antes de desplegar.

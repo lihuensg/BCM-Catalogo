@@ -6,7 +6,7 @@ export default [
   { ignores: ['**/node_modules/**', '**/.next/**', '**/dist/**', '**/generated/**', '**/next-env.d.ts', 'artifacts/**', '.npm-cache/**'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
-  ...nextVitals.map((config) => ({ ...config, files: ['frontend/**/*.{ts,tsx,js,mjs}'] })),
+  ...nextVitals.map((config) => ({ ...config, files: ['apps/{public,admin}/**/*.{ts,tsx,js,mjs}'] })),
   {
     files: ['**/*.{ts,tsx}'],
     rules: {
@@ -15,5 +15,5 @@ export default [
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
     }
   },
-  { settings: { next: { rootDir: 'frontend/' } } }
+  { settings: { next: { rootDir: ['apps/public/', 'apps/admin/'] } } }
 ];

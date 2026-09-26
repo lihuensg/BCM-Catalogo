@@ -1,0 +1,132 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import type { PublicProductListQuery } from '@bcm/shared';
+import { getBanners, getBrands, getCategories, getProducts } from '@/services/public/client';
+import { availabilityOptions, catalogQuery, saleModeLabel } from '@/features/catalog/model';
+import { ProductCard } from './product-card';
+import { CatalogFilterPanel } from './catalog-filter-panel';
+
+function pageHref(path: string, params: Record<string, string | string[] | undefined>, page: number) {
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    const item = Array.isArray(value) ? value[0] : value;
+    if (item && key !== 'page') query.set(key, item);
+  }
+  if (page > 1) query.set('page', String(page));
+  return path + (query.size ? '?' + query.toString() : '');
+}
+
+function withoutFilter(path: string, params: Record<string, string | string[] | undefined>, key: string) {
+  const query = new URLSearchParams();
+  for (const [name, value] of Object.entries(params)) {
+    const item = Array.isArray(value) ? value[0] : value;
+    if (item && name !== key && name !== 'page') query.set(name, item);
+  }
+  return path + (query.size ? '?' + query.toString() : '');
+}
+
+export async function CatalogListing({ pathname, params, title, description, forced = {} }: {
+  pathname: string;
+  params: Record<string, string | string[] | undefined>;
+  title: string;
+  description: string;
+  forced?: Partial<PublicProductListQuery>;
+}) {
+  const query = catalogQuery(params, forced);
+  const [result, categories, brands, catalogBanners] = await Promise.all([getProducts(query), getCategories(), getBrands(), getBanners('CATALOG_TOP')]);
+  const products = result?.data ?? [];
+  const meta = result?.meta;
+  const activeFilters: Array<{ key: string; label: string }> = [];
+  if (query.search) activeFilters.push({ key: 'search', label: `Búsqueda: ${query.search}` });
+  if (query.category && !forced.category) activeFilters.push({ key: 'category', label: categories.find(item => item.slug === query.category)?.name ?? query.category });
+  if (query.brand && !forced.brand) activeFilters.push({ key: 'brand', label: brands.find(item => item.slug === query.brand)?.name ?? query.brand });
+  if (query.minPrice) activeFilters.push({ key: 'minPrice', label: `Desde $${query.minPrice}` });
+  if (query.maxPrice) activeFilters.push({ key: 'maxPrice', label: `Hasta $${query.maxPrice}` });
+  if (query.availability) activeFilters.push({ key: 'availability', label: availabilityOptions.find(([value]) => value === query.availability)?.[1] ?? query.availability });
+  if (query.saleMode) activeFilters.push({ key: 'saleMode', label: saleModeLabel[query.saleMode] });
+  if (query.onSale && !forced.onSale) activeFilters.push({ key: 'onSale', label: 'Ofertas' });
+  if (query.featured && !forced.featured) activeFilters.push({ key: 'featured', label: 'Destacados' });
+  if (query.newArrival && !forced.newArrival) activeFilters.push({ key: 'newArrival', label: 'Nuevos' });
+
+  return <>
+    <section className="catalog-hero container">
+      <div className="eyebrow">BCM / CATÁLOGO</div>
+      <h1>{title}</h1><p>{description}</p>
+    </section>
+    {!!catalogBanners.length && <section className="catalog-banner-wrap container" aria-label="Campaña de catálogo">
+      {catalogBanners.slice(0, 1).map(banner => <article className="catalog-banner" key={banner.id}>
+        <Image src={banner.imageUrl} alt="" fill unoptimized sizes="(max-width:800px) 100vw,1200px" />
+        <div className="catalog-banner-overlay" />
+        <div className="catalog-banner-copy">
+          {banner.title && <h2>{banner.title}</h2>}
+          {banner.subtitle && <p>{banner.subtitle}</p>}
+          {banner.ctaText && banner.ctaHref && <Link href={banner.ctaHref}>{banner.ctaText} →</Link>}
+        </div>
+      </article>)}
+    </section>}
+    <div className="catalog-layout container">
+      <aside className="catalog-filters">
+        <CatalogFilterPanel activeCount={activeFilters.length} resultCount={meta?.total ?? 0}>
+          <h2>Filtrar catálogo</h2>
+          <form action={pathname}>
+          <label>Buscar<input name="search" defaultValue={query.search ?? ''} placeholder="Nombre, marca..." /></label>
+          {!forced.category && <label>Categoría<select name="category" defaultValue={query.category ?? ''}>
+            <option value="">Todas</option>{categories.filter(item => item.productCount > 0).map(item => <option key={item.id} value={item.slug}>{item.name}</option>)}
+          </select></label>}
+          {!forced.brand && <label>Marca<select name="brand" defaultValue={query.brand ?? ''}>
+            <option value="">Todas</option>{brands.filter(item => item.productCount > 0).map(item => <option key={item.id} value={item.slug}>{item.name}</option>)}
+          </select></label>}
+          <div className="filter-price-row">
+            <label>Precio desde<input name="minPrice" inputMode="decimal" defaultValue={query.minPrice ?? ''} placeholder="0" /></label>
+            <label>Precio hasta<input name="maxPrice" inputMode="decimal" defaultValue={query.maxPrice ?? ''} placeholder="Sin límite" /></label>
+          </div>
+          <label>Disponibilidad<select name="availability" defaultValue={query.availability ?? ''}>
+            <option value="">Todas</option>{availabilityOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+          </select></label>
+          <label>Tipo de venta<select name="saleMode" defaultValue={query.saleMode ?? ''}>
+            <option value="">Todos</option>{Object.entries(saleModeLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+          </select></label>
+          <div className="catalog-checks">
+            {!forced.onSale && <label><input type="checkbox" name="onSale" value="true" defaultChecked={query.onSale === true} /> Ofertas</label>}
+            {!forced.featured && <label><input type="checkbox" name="featured" value="true" defaultChecked={query.featured === true} /> Destacados</label>}
+            {!forced.newArrival && <label><input type="checkbox" name="newArrival" value="true" defaultChecked={query.newArrival === true} /> Nuevos</label>}
+          </div>
+          <label>Orden<select name="sort" defaultValue={query.sort}>
+            <option value="sortOrder">Recomendados</option><option value="publishedAt">Más recientes</option><option value="name">Nombre</option><option value="price">Precio</option>
+          </select></label>
+          <label>Dirección<select name="order" defaultValue={query.order}><option value="asc">Ascendente</option><option value="desc">Descendente</option></select></label>
+          <div className="filter-actions">
+            <Link className="button button-secondary" href={pathname}>Limpiar</Link>
+            <button className="button" type="submit">Ver {meta?.total ?? 0} productos</button>
+          </div>
+          </form>
+        </CatalogFilterPanel>
+      </aside>
+      <section className="catalog-content" aria-live="polite">
+        <div className="catalog-toolbar">
+          <div>
+            <strong>{meta ? meta.total : 0}</strong> {meta?.total === 1 ? 'producto' : 'productos'}
+            <span className="catalog-toolbar-note"> · Encontrá tu próxima elección</span>
+          </div>
+          <span>Página {meta?.page ?? 1}</span>
+        </div>
+        {!!activeFilters.length && <div className="active-filter-bar" aria-label="Filtros activos">
+          <div className="active-filter-chips">
+            {activeFilters.map(filter => <Link key={filter.key} href={withoutFilter(pathname, params, filter.key)}>{filter.label}<span aria-hidden="true">×</span></Link>)}
+          </div>
+          <Link className="clear-filters" href={pathname}>Limpiar todos</Link>
+        </div>}
+        {result === null
+          ? <div className="catalog-empty" role="status"><h2>Catálogo temporalmente no disponible</h2><p>No pudimos actualizar esta vista. Si había contenido cacheado seguirá disponible; también podés volver a intentar en unos instantes.</p><Link className="button" href={pathname}>Volver a intentar</Link></div>
+          : products.length
+            ? <div className="product-grid">{products.map(product => <ProductCard key={product.id} product={product} />)}</div>
+            : <div className="catalog-empty"><h2>No encontramos productos</h2><p>Probá limpiando los filtros o consultanos para ayudarte.</p><Link className="button" href="/catalogo">Ver todo el catálogo</Link></div>}
+        {meta && meta.totalPages > 1 && <nav className="store-pagination" aria-label="Paginación del catálogo">
+          {meta.page > 1 && <Link aria-label="Página anterior" href={pageHref(pathname, params, meta.page - 1)}>←</Link>}
+          <span className="current" aria-current="page">{meta.page}</span>
+          {meta.page < meta.totalPages && <Link aria-label="Página siguiente" href={pageHref(pathname, params, meta.page + 1)}>→</Link>}
+        </nav>}
+      </section>
+    </div>
+  </>;
+}

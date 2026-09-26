@@ -14,4 +14,14 @@ async function main(){
  if(path){const result=await seedStructure(db,JSON.parse(await readFile(path,'utf8')) as unknown);console.info('Structural seed completed:',result.categories,'categories,',result.brands,'brands.');}
  if(catalogPath){const result=await seedCatalog(db,JSON.parse(await readFile(catalogPath,'utf8')) as unknown);console.info('Catalog seed completed:',result.productsCreated,'new products of',result.products,'defined.');}
 }
-try{await main();}catch{console.error('Seed failed. Check input, environment and applied migrations.');process.exitCode=1;}finally{await disconnectPrisma();}
+try {
+    await main();
+} catch (error) {
+    const details = error instanceof Error
+        ? `${error.name}: ${error.message}`.replace(/postgres(?:ql)?:\/\/[^\s]+/gi, '[REDACTED_DATABASE_URL]')
+        : 'Unknown seed error';
+    console.error('Seed failed:', details);
+    process.exitCode = 1;
+} finally {
+    await disconnectPrisma();
+}

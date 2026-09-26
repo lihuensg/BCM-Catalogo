@@ -103,7 +103,7 @@ puertos, limpieza limitada a fixtures, capturas y recuperación tras interrupci�
 
 ## Storefront público y CI
 
-La suite Playwright incluye `frontend/tests/e2e/public.spec.ts` para:
+La suite Playwright incluye `apps/public/tests/e2e/public.spec.ts` para:
 - home pública;
 - catálogo y campañas;
 - filtros;

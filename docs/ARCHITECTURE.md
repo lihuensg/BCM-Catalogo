@@ -38,7 +38,9 @@ BCM/
 ├── README.md
 ├── docs/
 ├── prompts/
-├── frontend/
+├── apps/
+│   ├── public/
+│   └── admin/
 ├── backend/
 └── packages/
     └── shared/
@@ -46,24 +48,19 @@ BCM/
 
 No introducir Turborepo/Nx salvo necesidad real. Mantener setup simple.
 
-## Frontend
+## Frontends independientes
 ```text
-frontend/
-├── app/
-│   ├── (public)/
-│   └── admin/
-├── components/
-│   ├── ui/
-│   ├── catalog/
-│   ├── admin/
-│   └── shared/
-├── features/
-├── lib/
-├── services/
-├── hooks/
-├── types/
-└── styles/
+apps/public/   Next.js público, SEO, catálogo y revalidación
+apps/admin/    Next.js privado, BFF de sesión y panel de gestión
 ```
+
+Las aplicaciones compilan y se despliegan por separado. `apps/public` no contiene
+rutas, componentes ni servicios administrativos. `apps/admin` expone sus pantallas
+desde `/`, `/login`, `/productos`, `/categorias`, `/marcas`, `/atributos`, `/banners`
+y `/configuracion`; el prefijo `/admin` continúa existiendo únicamente en la API.
+
+Ambas consumen contratos de `packages/shared`. No existe un paquete UI compartido:
+la presentación es propia de cada bundle y no justifica otra capa de acoplamiento.
 
 ## Backend
 ```text

@@ -1,5 +1,14 @@
 # FRONTEND.md
 
+## Aplicaciones
+
+- `apps/public`: storefront en `http://localhost:3000` y futuro `https://catalogo.bcm.com.ar`.
+- `apps/admin`: gestión en `http://localhost:3001` y futuro `https://gestion.bcm.com.ar`.
+
+El público no contiene código administrativo. El admin usa un route handler BFF en
+`/api/admin-proxy/*` para conservar la sesión HttpOnly como cookie host-only del
+dominio de gestión. Los endpoints reales del backend conservan `/api/v1/admin/*`.
+
 ## Objetivos
 - excelente UX pública;
 - excelente ergonomía admin;
